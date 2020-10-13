@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import {BrowserRouter, Route, Redirect} from 'react-router-dom'
 import Cookie from 'universal-cookie'
 
