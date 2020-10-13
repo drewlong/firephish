@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 
 body{
-  background: #263238;
+  background: #0F2027;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom, #2C5364, #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
@@ -13,9 +15,7 @@ body{
 
 /* AUTH */
 .auth-main{
-  background: #0F2027;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to bottom, #2C5364, #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to bottom, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -47,4 +47,104 @@ body{
   color: #ffffff
 }
 
+/* HOME */
+.dashboard-main{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw
+}
+.dashboard-section{
+  height: 100%;
+  width: 100%
+}
+.content{
+  background: #fff;
+  width: calc(100vw - 300px);
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 300px;
+  padding: 20px;
+}
 /* GLOBAL */
+.big_logo{
+  width: 400px;
+  height: auto;
+  position: absolute;
+  top: 25px;
+  left: calc(50% - 200px)
+}
+.big_logo img{
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.column{
+  height: 100%;
+  display: flex;
+  flex-direction: column
+}
+.row{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important
+}
+.small_logo{
+  height: 80px;
+  width: auto;
+}
+.small_logo img{
+  width: 200px;
+  height: auto;
+  margin: 5px;
+}
+.header{
+  width: 100%;
+  height: 100px;
+  padding-left: 50px;
+  padding-top: 20px;
+  position: absolute;
+  top: 0;
+  left: 0
+}
+.sidebar{
+  width: 200px;
+  height: calc(100% - 110px);
+  position: absolute;
+  top: 110px;
+  left: 50px;
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+  font-size: 1.25em;
+}
+.sidebar-item{
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  transition: background 0.25s;
+  padding: 0 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.sidebar-item:hover{
+  background: #2C5364
+}
+.logout-btn{
+  width: 200px;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  text-align: center;
+  z-index: 1000;
+}
+h1,h2,h3,h4{
+  color: #37474f!important;
+}

@@ -3,7 +3,7 @@ import Axios from 'axios'
 import {Button, Input, Message} from 'semantic-ui-react'
 import config from '../global/config.json'
 import Cookie from 'universal-cookie'
-
+import Logo from '../../img/fplogo_lg.png'
 const cookie = new Cookie()
 
 const API = config.api_url
@@ -35,6 +35,10 @@ export default class Auth extends Component{
   render(){
     return(
       <div className="auth-main">
+      <div className="big_logo">
+        <img src={Logo} />
+      </div>
+
         <div className="auth-box">
           <h1>Login</h1>
           <Input

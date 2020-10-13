@@ -21,7 +21,7 @@ export default class Router extends Component{
         <BrowserRouter>
           <div>
             <Route exact path="/" component={Auth} />
-            <Route exact path="/dashboard" render={(props) => (
+            <Route exact path="/dashboard/:section" render={(props) => (
               cookie.get("fp_token") ? (
                 <Dashboard {...props} />
               ) : (
