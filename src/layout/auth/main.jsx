@@ -40,13 +40,15 @@ export default class Auth extends Component{
       </div>
 
         <div className="auth-box">
-          <h1>Login</h1>
+          <span style={{color: "#ffffff", fontSize: "2em", marginBottom: 20}}>Login</span>
           <Input
             className="auth-input"
+            placeholder="Username"
             onChange={(e) => {this.setState({username: e.target.value})}}
             />
           <Input
             className="auth-input"
+            placeholder="Password"
             type="password"
             onChange={(e) => {this.setState({password: e.target.value})}}
             />
