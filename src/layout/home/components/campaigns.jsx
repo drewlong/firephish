@@ -44,7 +44,7 @@ export default class Campaigns extends Component{
             onClick={() => {this.handleItemClick("inactive")}}
           />
           <Menu.Item>
-            <Button basic content='Create New' icon='plus' labelPosition='left' color="green"/>
+            <Button basic content='Create New' icon='plus' labelPosition='left' color="teal"/>
           </Menu.Item>
           <Menu.Menu position='right'>
             <Menu.Item>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import {Button, Divider, Grid, Header, Icon, Input, Segment} from 'semantic-ui-react'
+import {Button, Divider, Icon, Input, Segment} from 'semantic-ui-react'
 import config from '../../global/config.json'
 
 const API = config.api_url
@@ -10,6 +10,7 @@ export default class Profiles extends Component{
     super(props)
     this.state = {
       loading: true,
+      editor: true,
       dummy: [
         {
           name: "Gmail Profile",
@@ -53,6 +54,7 @@ export default class Profiles extends Component{
 
         <div className="row" style={{height: '100%'}}>
           <div className="column" style={{flex: 1, padding: 10}}>
+            <h4>Create New Profile</h4>
             <div className="row" style={{marginBottom: 10}}>
               <Input
                 style={{width: '100%'}}
