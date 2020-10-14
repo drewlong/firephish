@@ -14,9 +14,12 @@ export default class Templates extends Component{
       code: "<h1>Edit HTML here!</h1>",
       editor_dark_mode: false,
       template_vars: [
-        { key: 'edit', icon: 'chain', text: 'Tracking URL', value: 'Tracking URL' },
-        { key: 'delete', icon: 'delete', text: 'Remove Post', value: 'delete' },
-        { key: 'hide', icon: 'hide', text: 'Hide Post', value: 'hide' },
+        { key: 'tracking', icon: 'chain', text: 'Tracking URL', value: '%%Tracking_URL%%' },
+        { key: 'fname', icon: 'user', text: 'First Name', value: '%%First_Name%%' },
+        { key: 'lname', icon: 'user', text: 'Last Name', value: '%%Last_Name%%' },
+        { key: 'position', icon: 'user', text: 'Position', value: '%%Position%%' },
+        { key: 'group', icon: 'group', text: 'Group Name', value: '%%Group_Name%%' },
+
       ]
     }
   }
