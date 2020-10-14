@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import {Divider, Icon, Input, Menu, Segment} from 'semantic-ui-react'
+import {Button, Divider, Icon, Input, Menu, Segment} from 'semantic-ui-react'
 import config from '../../global/config.json'
 
+// Components
+import CampaignCard from './campaign_card'
+
+//Constants
 const API = config.api_url
 
 export default class Campaigns extends Component{
@@ -39,6 +43,9 @@ export default class Campaigns extends Component{
             active={this.state.activeItem === 'inactive'}
             onClick={() => {this.handleItemClick("inactive")}}
           />
+          <Menu.Item>
+            <Button basic content='Create New' icon='plus' labelPosition='left' color="green"/>
+          </Menu.Item>
           <Menu.Menu position='right'>
             <Menu.Item>
               <Input icon='search' placeholder='Search...' />
@@ -46,23 +53,12 @@ export default class Campaigns extends Component{
           </Menu.Menu>
         </Menu>
         {this.state.activeItem == 'active' &&
-          <div className="column">
-            <Segment.Group>
-              <Segment color="yellow">
-                <span style={{color: "#546e7a", fontSize: '1.5em'}}>
-                  Campaign Name Here
-                </span>
-              </Segment>
-              <Segment.Group horizontal>
-                <Segment>Start Time: 10/12/2020 13:45:00</Segment>
-                <Segment>Time Remaining: 00:00:00</Segment>
-                <Segment>Total Targets: 9537</Segment>
-              </Segment.Group>
-              <Segment>
-                <div className="row" style={{height: 200}}></div>
-              </Segment>
-            </Segment.Group>
-          </div>
+          <Segment style={{overflowY: "scroll", height: "calc(100% - 130px)"}}>
+              <CampaignCard />
+              <CampaignCard />
+              <CampaignCard />
+              <CampaignCard />
+          </Segment>
         }{this.state.activeItem == 'inactive' &&
           <div className="column">
             inactive campaigns

@@ -112,7 +112,8 @@ export default class Profiles extends Component{
               flex: 2,
               padding: '0 20px',
               borderLeft: 'solid 1px rgba(0, 0, 0, 0.15)',
-              overflowY: 'scroll'
+              overflowY: 'scroll',
+              height: "calc(100% - 65px)"
             }}>
             {this.state.dummy.map((d, i) => {
               return(
