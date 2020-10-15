@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
 import {Button, Divider, Dropdown, Icon, Input, Label, Menu, Message} from 'semantic-ui-react'
-import ReactPrismEditor from "react-prism-editor";
+import ReactPrismEditor from "react-prism-editor"
+import { Sandbox, withDependencies } from "react-sandbox-editor"
 import config from '../../global/config.json'
 
 const API = config.api_url
@@ -82,35 +83,20 @@ export default class Templates extends Component{
             </div>
             <Divider />
             <div className="row" style={{height: "80vh"}}>
-              <div style={{
-                  flex: 1,
-                  overflowY: "scroll",
-                  height: '100%',
-                  opacity: 0.95,
-                  padding: 10,
-                  background: this.state.editor_dark_mode ? "#2d2d2d" : "#fdf6e3"
-                }}
-                >
-                <Button
-                  basic={this.state.editor_dark_mode}
-                  inverted={this.state.editor_dark_mode}
-                  onClick={() => {this.setState({editor_dark_mode: this.state.editor_dark_mode ? false : true})}}
-                  color={this.state.editor_dark_mode ? "yellow" : "grey"}>
-                  {this.state.editor_dark_mode ? "Light Mode" : "Dark Mode"}
-                </Button> <br /><br />
-                <ReactPrismEditor
-                  language={"html"}
-                  code={this.state.code}
-                  theme={this.state.editor_dark_mode ? "tomorrow" : "solarizedlight"}
-                  lineNumber={true}
-                  readOnly={false}
-                  clipboard={true}
-                  changeCode={code => {
-                    this.setState({code: code})
+              <div style={{flex: 1}}>
+                <Sandbox
+                  style={{height: "80vh"}}
+                  theme="solarized_dark"
+                  templateEditor={{
+                    defaultValue: this.state.code,
+                    mode: 'html',
+                    readOnly: false,
+                    wrapLines: false
                   }}
-                  />
+                  executeOnCodeChange={true}
+                  onCodeChange={(name, val) => {this.setState({code: val})}}
+                />
               </div>
-              <div style={{flex: 1}}></div>
             </div>
           </div>
         }
