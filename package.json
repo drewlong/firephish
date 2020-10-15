@@ -9,7 +9,6 @@
     "axios": "^0.20.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-prism-editor": "^1.1.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-sandbox-editor": "^2.0.1",
