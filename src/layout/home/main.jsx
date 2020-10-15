@@ -40,7 +40,7 @@ export default class Dashboard extends Component{
       <div className="dashboard-main">
         <Header />
         <SideBar jwt={this.state.jwt}/>
-        <div className="content">
+        <div className="dashboard-content">
           {this.state.section == 'stats' &&
             <Stats />
           }

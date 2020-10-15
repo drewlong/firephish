@@ -60,8 +60,8 @@ body{
   height: 100%;
   width: 100%
 }
-.content{
-  background: #fff;
+.dashboard-content{
+  background: #ffffff;
   width: calc(100vw - 300px);
   height: 100vh;
   position: absolute;

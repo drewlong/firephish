@@ -19,7 +19,11 @@ export default class Templates extends Component{
         { key: 'position', icon: 'user', text: 'Position', value: '%%Position%%' },
         { key: 'group', icon: 'group', text: 'Group Name', value: '%%Group_Name%%' }
       ],
-      cb_fail: false
+      cb_fail: false,
+      editor_dark_mode: true,
+      dummy: [
+        {}
+      ]
     }
   }
   handleTempVar = (e, {value}) => {
@@ -38,8 +42,20 @@ export default class Templates extends Component{
     this.setState({copied: true})
     setTimeout(() => {
       this.setState({copied: false})
-    }, 1500)
+    }, 2000)
     navigator.clipboard.writeText(this.state.temp_var)
+  }
+  handleCodeSave = () => {
+    this.setState({loading: true, saving: true})
+    setTimeout(() => {
+      this.setState({loading: false, saving: false, saved: true})
+      this.flashSavedBtn()
+    }, 2000)
+  }
+  flashSavedBtn = () => {
+    setTimeout(() => {
+      this.setState({saved: false})
+    }, 1000)
   }
   render(){
     return(
@@ -50,17 +66,26 @@ export default class Templates extends Component{
         </Divider>
         {this.state.editor &&
           <div className="column">
-            <div className="row">
-              <div style={{flex: 1}}>
+            <Menu pointing>
+              <Menu.Item>
                 <h3>Template Editor</h3>
-              </div>
-              <div style={{flex: 1}}>
-                <Button color="grey">Dark Mode</Button>
-              </div>
-              <div style={{flex: 1}}>
+              </Menu.Item>
+              <Menu.Item>
+                <div className="row">
+                  <Checkbox
+                    toggle
+                    checked={this.state.editor_dark_mode}
+                    onClick={() => {this.setState({editor_dark_mode: this.state.editor_dark_mode ? false : true})}}
+                    />
+                  <span>&nbsp;</span>
+                  <span>Dark Mode</span>
+                </div>
+              </Menu.Item>
+              <Menu.Item>
                 <div className="row">
                   <Dropdown
                     fluid
+                    style={{minWidth: 250}}
                     placeholder='Select Template Variable'
                     search selection options={this.state.template_vars}
                     onChange={this.handleTempVar}
@@ -70,29 +95,37 @@ export default class Templates extends Component{
                     <Button icon="copy" color="teal" onClick={this.handleCopyTempVar}/>
                   }
                 </div>
-              </div>
-              <div style={{flex: 1}}>
+              </Menu.Item>
+              <Menu.Item style={{minWidth: 250}}>
+                <div style={{flex: 1}}>
                   {this.state.copied &&
                     <div className="row">
-                      <Message size="mini" color="green">Copied to clipboard</Message>
+                      <Message size="mini" color="green">Variable copied to clipboard!</Message>
                     </div>
                   }{this.state.cb_fail && this.state.temp_var &&
                     <Input fluid value={this.state.temp_var} />
                   }
-              </div>
-              <div style={{padding: "0 20px 0 5px"}}>
+                </div>
+              </Menu.Item>
+              <Menu.Item position="right">
                 <Button.Group>
-                  <Button basic color="green">Save</Button>
-                  <Button basic color="red">Cancel</Button>
+                  {this.state.saved &&
+                    <Button basic color="green" icon="check" />
+                  }{!this.state.saved &&
+                    <Button basic={this.state.saving} loading={this.state.saving} color="blue" onClick={this.handleCodeSave}>Save</Button>
+                  }
+                  <Button
+                    color="red"
+                    onClick={() => {this.setState({editor: this.state.editor ? false : true})}}
+                    >Close</Button>
                 </Button.Group>
-              </div>
-            </div>
-            <Divider />
-            <div className="row" style={{height: "80vh"}}>
+              </Menu.Item>
+            </Menu>
+            <div className="row" style={{height: "75vh"}}>
               <div style={{flex: 1}}>
                 <Sandbox
-                  style={{height: "80vh"}}
-                  theme="solarized_dark"
+                  style={{height: "75vh"}}
+                  theme={this.state.editor_dark_mode ? "solarized_dark" : "tomorrow"}
                   templateEditor={{
                     defaultValue: this.state.code,
                     mode: 'html',
@@ -108,23 +141,25 @@ export default class Templates extends Component{
             </div>
           </div>
         }
-        <Menu pointing>
-          <Menu.Item>
-            <Button
-              basic
-              content='Create New'
-              icon='plus'
-              labelPosition='left'
-              color="teal"
-              onClick={() => {this.setState({editor: this.state.editor ? false : true})}}
-              />
-          </Menu.Item>
-          <Menu.Menu position='right'>
+        {!this.state.editor &&
+          <Menu pointing>
             <Menu.Item>
-              <Input icon='search' placeholder='Search...' />
+              <Button
+                basic
+                content='Create New'
+                icon='plus'
+                labelPosition='left'
+                color="teal"
+                onClick={() => {this.setState({editor: this.state.editor ? false : true})}}
+                />
             </Menu.Item>
-          </Menu.Menu>
-        </Menu>
+            <Menu.Menu position='right'>
+              <Menu.Item>
+                <Input icon='search' placeholder='Search...' />
+              </Menu.Item>
+            </Menu.Menu>
+          </Menu>
+        }
       </div>
     )
   }
