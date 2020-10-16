@@ -54,13 +54,15 @@ export default class Campaigns extends Component{
             <Icon name="ellipsis horizontal" color={this.state.loading ? "teal" : "grey"} loading={this.state.loading}/>
         </Divider>
         {this.state.editor &&
-          <div className="column" style={{overflowY: 'scroll'}}>
-            <div className="row" style={{flex: 1}}>
-              <div className="column" style={{justifyContent: 'center', flex: 2}}>
-              </div>
+          <div className="column" style={{background: "#cfd8dc"}}>
+            <div style={{flex: 1}}></div>
+            <div className="row" style={{flex: 4}}>
+              <div style={{flex: 1}}></div>
               <Segment.Group style={{flex: 3}}>
                 <Segment>
-                  <div className="column">
+                  <Segment.Group horizontal>
+                    <Segment>
+                    <div className="column">
                     <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
                       <h4>Name</h4>
                     </div>
@@ -77,7 +79,15 @@ export default class Campaigns extends Component{
                       <h4>Sender</h4>
                     </div>
                     <div className="row" style={{marginBottom: 10}}>
-                      <Input style={{flex: 1}}/>
+                      <Dropdown
+                        fluid
+                        style={{minWidth: 250}}
+                        placeholder='Select Sender'
+                        search
+                        selection
+                        options={this.state.email_templates}
+                        onChange={this.handleEmailTemplate}
+                        />
                     </div>
                     <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
                       <h4>Email Template</h4>
@@ -93,72 +103,79 @@ export default class Campaigns extends Component{
                         onChange={this.handleEmailTemplate}
                         />
                     </div>
-                    <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
-                      <h4 style={{paddingRight: 10}}>Attachment</h4>
-                        <Checkbox
-                          toggle
-                          onClick={() => {this.setState({attachment: this.state.attachment ? false : true})}}
-                          checked={this.state.attachment}
-                          />
-                    </div>
-                    {this.state.attachment &&
-                      <div className="row" style={{marginBottom: 10}}>
-                        <Dropdown
-                          fluid
-                          style={{minWidth: 250}}
-                          placeholder='Select Attachment'
-                          search
-                          selection
-                          options={this.state.attachments}
-                          onChange={this.handleAttachments}
-                          />
-                      </div>
-                    }
-                    <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
-                      <h4>Landing Page</h4>
-                    </div>
-                    <div className="row" style={{marginBottom: 10}}>
-                      <Dropdown
-                        fluid
-                        style={{minWidth: 250}}
-                        placeholder='Select Landing Page'
-                        search
-                        selection
-                        options={this.state.landing_pages}
-                        onChange={this.handleLandingPage}
-                        />
-                    </div>
-                    <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
-                      <h4>Start Time</h4>
-                    </div>
-                    <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
-                      <DateTimePicker
-                        disableClock
-                        onChange={(val, e) => {this.setState({start_time: val})}}
-                        value={this.state.start_time}
-                      />
-                    </div>
-                    <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
-                      <h4>Send Emails By (Optional)</h4>
-                    </div>
-                    <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
-                      <DateTimePicker
-                        disableClock
-                        onChange={(val, e) => {this.setState({start_time: val})}}
-                        value={this.state.start_time}
-                      />
-                    </div>
-                    <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
-                      <h4>End Time (Optional)</h4>
-                    </div>
-                    <div className="row" style={{justifyContent: 'flex-start', }}>
-                      <DateTimePicker
-                        disableClock
-                        onChange={(val, e) => {this.setState({start_time: val})}}
-                        value={this.state.start_time}
-                      />
-                    </div>
                   </div>
+                    </Segment>
+                    <Segment>
+                      <div className="column">
+
+                        <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
+                          <h4 style={{paddingRight: 10}}>Attachment</h4>
+                            <Checkbox
+                              toggle
+                              onClick={() => {this.setState({attachment: this.state.attachment ? false : true})}}
+                              checked={this.state.attachment}
+                              />
+                        </div>
+                        {this.state.attachment &&
+                          <div className="row" style={{marginBottom: 10}}>
+                            <Dropdown
+                              fluid
+                              style={{minWidth: 250}}
+                              placeholder='Select Attachment'
+                              search
+                              selection
+                              options={this.state.attachments}
+                              onChange={this.handleAttachments}
+                              />
+                          </div>
+                        }
+                        <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
+                          <h4>Landing Page</h4>
+                        </div>
+                        <div className="row" style={{marginBottom: 10}}>
+                          <Dropdown
+                            fluid
+                            style={{minWidth: 250}}
+                            placeholder='Select Landing Page'
+                            search
+                            selection
+                            options={this.state.landing_pages}
+                            onChange={this.handleLandingPage}
+                            />
+                        </div>
+                        <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
+                          <h4>Start Time</h4>
+                        </div>
+                        <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
+                          <DateTimePicker
+                            disableClock
+                            onChange={(val, e) => {this.setState({start_time: val})}}
+                            value={this.state.start_time}
+                          />
+                        </div>
+                        <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
+                          <h4>Send Emails By (Optional)</h4>
+                        </div>
+                        <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
+                          <DateTimePicker
+                            disableClock
+                            onChange={(val, e) => {this.setState({start_time: val})}}
+                            value={this.state.start_time}
+                          />
+                        </div>
+                        <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
+                          <h4>End Time (Optional)</h4>
+                        </div>
+                        <div className="row" style={{justifyContent: 'flex-start', }}>
+                          <DateTimePicker
+                            disableClock
+                            onChange={(val, e) => {this.setState({start_time: val})}}
+                            value={this.state.start_time}
+                          />
+                        </div>
+                      </div>
+                    </Segment>
+                  </Segment.Group>
                 </Segment>
                 <Segment>
                   <Button.Group fluid style={{opacity: 0.9}}>
@@ -167,8 +184,10 @@ export default class Campaigns extends Component{
                   </Button.Group>
                 </Segment>
               </Segment.Group>
-              <div style={{flex: 2}}></div>
+              <div style={{flex: 1}}></div>
             </div>
+            <div style={{flex: 1}}></div>
+            <div style={{flex: 1}}></div>
           </div>
         }
         {!this.state.editor &&
