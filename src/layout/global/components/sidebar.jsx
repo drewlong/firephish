@@ -32,6 +32,15 @@ export default class Sidebar extends Component{
         <div className="sidebar-item" onClick={() => {this.handleNav('templates')}}>
           <Icon name="mail" inverted /> &nbsp; Email Templates
         </div>
+        <div className="sidebar-item" onClick={() => {this.handleNav('landing_pages')}}>
+          <Icon name="image" inverted /> &nbsp; Landing Pages
+        </div>
+        <div className="sidebar-item" onClick={() => {this.handleNav('attachments')}}>
+          <Icon name="file code" inverted /> &nbsp; Attachments
+        </div>
+        <div className="sidebar-item" onClick={() => {this.handleNav('training')}}>
+          <Icon name="idea" inverted /> &nbsp; Training
+        </div>
         <div className="sidebar-item" onClick={() => {this.handleNav('addresses')}}>
           <Icon name="address book" inverted /> &nbsp; Address Book
         </div>

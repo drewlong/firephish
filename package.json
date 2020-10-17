@@ -11,6 +11,7 @@
     "react": "^16.13.1",
     "react-datetime-picker": "^3.0.4",
     "react-dom": "^16.13.1",
+    "react-map-gl": "^5.2.9",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-sandbox-editor": "^2.0.1",

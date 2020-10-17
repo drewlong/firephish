@@ -12,6 +12,9 @@ import Stats from './components/stats'
 import Campaigns from './components/campaigns'
 import Profiles from './components/profiles'
 import Templates from './components/templates'
+import LandingPages from './components/landing_pages'
+import Attachments from './components/attachments'
+import Training from './components/training'
 import Addresses from './components/addresses'
 import Settings from './components/settings'
 
@@ -52,6 +55,15 @@ export default class Dashboard extends Component{
           }
           {this.state.section == 'templates' &&
             <Templates />
+          }
+          {this.state.section == 'landing_pages' &&
+            <LandingPages />
+          }
+          {this.state.section == 'attachments' &&
+            <Attachments />
+          }
+          {this.state.section == 'training' &&
+            <Training />
           }
           {this.state.section == 'addresses' &&
             <Addresses />
