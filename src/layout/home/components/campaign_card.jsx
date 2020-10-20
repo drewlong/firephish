@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
 import {Button, Dimmer, Divider, Header, Icon, Input, Label, Menu, Progress, Segment} from 'semantic-ui-react'
-import {VictoryBar, VictoryContainer, VictoryStack} from 'victory'
 import config from '../../global/config.json'
 
 const API = config.api_url
@@ -113,46 +112,8 @@ export default class Stats extends Component{
                     </div>
                     <div className="row" style={{opacity: 0.75}}>
                       {this.barRef.current &&
-                        <VictoryStack
-                          animate={{
-                            duration: 1000,
-                            onLoad: { duration: 100 }
-                          }}
-                          width={this.barRef.current.offsetWidth}
-                          height={30}
-                          padding={0}
-                          colorScale={["#21ba45", "#fbbd08", "#db2828"]}
-                          containerComponent={
-                            <VictoryContainer
-                              height={30}
-                              width={this.barRef.current.offsetWidth}
-                              responsive
-                              />
-                          }
-                          >
-                          <VictoryBar horizontal
-                            padding={0}
-                            style={{data:{
-                              width: 30}
-                            }}
-                            data={[{x: "unopened", y: 4379}]}
-                            />
-                          <VictoryBar horizontal
-                            padding={0}
-                            style={{data:{
-                              width: 30
-                            }
-                          }}
-                          data={[{x: "opened", y: 2100}]}
-                          />
-                        <VictoryBar horizontal
-                          padding={0}
-                          style={{data:{
-                            width: 30}
-                          }}
-                          data={[{x: "clicked", y: 1437}]}
-                          />
-                      </VictoryStack>
+                        <div>
+                        </div>
                     }{!this.barRef.current &&
                       <div className="row"><Icon name="spinner" color="grey" size="big" loading /></div>
                     }

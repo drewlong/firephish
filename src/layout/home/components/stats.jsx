@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import Axios from 'axios'
 import MapGL, {Marker} from 'react-map-gl';
 import {Divider, Icon,Segment, Statistic} from 'semantic-ui-react'
-import {VictoryArea, VictoryContainer, VictoryStack} from 'victory'
 import config from '../../global/config.json'
 import MARKER_STYLE from './marker_style';
 import dummy from './map_dummy_data.json'
@@ -141,23 +140,7 @@ export default class Stats extends Component{
             <Segment style={{height: '36vh', flex: 1, margin: "0 10px 0 10px"}}>
               <div className="column" style={{height: '100%', flex: 1}} ref={this.chartRef}>
                 {this.chartRef.current &&
-                  <VictoryStack
-                    height={this.state.chartHeight}
-                    width={this.state.chartWidth}
-                    >
-                    <VictoryArea
-                      style={{data:{fill: "#43a047"}}}
-                      data={this.state.sent_line}
-                    />
-                    <VictoryArea
-                      style={{data:{fill: "#fb8c00"}}}
-                      data={this.state.opened_line}
-                    />
-                    <VictoryArea
-                      style={{data:{fill: "#e53935"}}}
-                      data={this.state.clicked_line}
-                    />
-                  </VictoryStack>
+                  <div></div>
 
                 }
               </div>
