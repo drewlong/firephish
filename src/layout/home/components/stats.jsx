@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import Axios from 'axios'
 import MapGL, {Marker} from 'react-map-gl';
 import {Divider, Icon,Segment, Statistic} from 'semantic-ui-react'
+import { ResponsiveBar } from '@nivo/bar'
 import config from '../../global/config.json'
 import MARKER_STYLE from './marker_style';
 import dummy from './map_dummy_data.json'
+import Dummy from './dummy_stats.json'
 const API = config.api_url
 
 export default class Stats extends Component{
@@ -32,12 +34,6 @@ export default class Stats extends Component{
         viewport.width = c.offsetWidth
         viewport.height = c.offsetHeight
         this.setState({viewport: viewport})
-      }
-      if(ch){
-        this.setState({
-          chartWidth: ch.offsetWidth,
-          chartHeight: ch.offsetHeight
-        })
       }
     }, 250)
     this.genData(3, "sent_line")
@@ -138,13 +134,104 @@ export default class Stats extends Component{
           </div>
           <div className="row" style={{flex: 1}}>
             <Segment style={{height: '36vh', flex: 1, margin: "0 10px 0 10px"}}>
-              <div className="column" style={{height: '100%', flex: 1}} ref={this.chartRef}>
-                {this.chartRef.current &&
-                  <div></div>
-
-                }
+              <div className="column" style={{height: "100%", flex: 1}} ref={this.chartRef}>
+                <ResponsiveBar
+                  data={Dummy}
+                  keys={[ 'Unopened', 'Opened', 'Clicked' ]}
+                  margin={{ top: 0, right: 10, bottom: 40, left: 60 }}
+                  padding={0.5}
+                  colorBy="id"
+                  borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+                  enableLabel={false}
+                  animate={true}
+                  motionStiffness={90}
+                  motionDamping={15}
+                  defs={[
+                    {
+                        id: 'sent',
+                        type: 'patternSquares',
+                        background: '#66bb6a',
+                        color: '#4caf50',
+                        size: 2,
+                        padding: 4,
+                        stagger: true
+                    },
+                  {
+                      id: 'opened',
+                      type: 'patternSquares',
+                      background: '#ffd54f',
+                      color: '#ffc107',
+                      size: 2,
+                      padding: 4,
+                      stagger: true
+                  },
+                  {
+                    id: 'clicked',
+                    type: 'patternSquares',
+                    background: '#e57373',
+                    color: '#f44336',
+                    size: 2,
+                    padding: 4,
+                    stagger: true
+                  }
+              ]}
+              fill={[
+                  {
+                      match: {
+                          id: 'Opened'
+                      },
+                      id: 'opened'
+                  },
+                  {
+                      match: {
+                          id: 'Unopened'
+                      },
+                      id: 'sent'
+                  },
+                  {
+                      match: {
+                          id: 'Clicked'
+                      },
+                      id: 'clicked'
+                  }
+              ]}
+              axisBottom={{
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 0,
+            legend: 'Month',
+            legendPosition: 'middle',
+            legendOffset: 32
+        }}
+              tooltip={(e) => {
+                return(
+                  <div className="row">
+                    {e.id == "Unopened" &&
+                      <Statistic color='green' size="mini">
+                        <Statistic.Label>{e.data.id}</Statistic.Label>
+                        <Statistic.Value>{e.value}</Statistic.Value>
+                        <Statistic.Label>Unopened</Statistic.Label>
+                      </Statistic>
+                    }
+                    {e.id == "Opened" &&
+                      <Statistic color='yellow' size="mini">
+                        <Statistic.Label>{e.data.id}</Statistic.Label>
+                        <Statistic.Value>{e.value}</Statistic.Value>
+                        <Statistic.Label>Opened</Statistic.Label>
+                      </Statistic>
+                    }
+                    {e.id == "Clicked" &&
+                      <Statistic color='red' size="mini">
+                        <Statistic.Label>{e.data.id}</Statistic.Label>
+                        <Statistic.Value>{e.value}</Statistic.Value>
+                        <Statistic.Label>Clicked</Statistic.Label>
+                      </Statistic>
+                    }
+                  </div>
+                )
+              }}
+              />
               </div>
-
             </Segment>
           </div>
         </div>

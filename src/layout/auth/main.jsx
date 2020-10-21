@@ -29,6 +29,7 @@ export default class Auth extends Component{
       }).then((res) => {
         console.log(res.data)
         cookie.set("fp_token", res.data.token, {sameSite: 'lax'})
+        this.props.history.push('/dashboard/stats')
       }).catch((err) => {})
     }
   }

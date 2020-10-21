@@ -1,0 +1,74 @@
+[
+  {
+    "id": "November",
+    "Unopened": 5871,
+    "Opened": 2190,
+    "Clicked": 954
+  },
+  {
+    "id": "December",
+    "Unopened": 7100,
+    "Opened": 899,
+    "Clicked": 1237
+  },
+  {
+    "id": "January",
+    "Unopened": 7231,
+    "Opened": 1890,
+    "Clicked": 547
+  },
+  {
+    "id": "February",
+    "Unopened": 8000,
+    "Opened": 1100,
+    "Clicked": 237
+  },
+  {
+    "id": "March",
+    "Unopened": 5871,
+    "Opened": 2190,
+    "Clicked": 954
+  },
+  {
+    "id": "April",
+    "Unopened": 7100,
+    "Opened": 899,
+    "Clicked": 1237
+  },
+  {
+    "id": "May",
+    "Unopened": 7231,
+    "Opened": 1890,
+    "Clicked": 547
+  },
+  {
+    "id": "June",
+    "Unopened": 8000,
+    "Opened": 1100,
+    "Clicked": 237
+  },
+  {
+    "id": "July",
+    "Unopened": 5871,
+    "Opened": 2190,
+    "Clicked": 954
+  },
+  {
+    "id": "August",
+    "Unopened": 7100,
+    "Opened": 899,
+    "Clicked": 1237
+  },
+  {
+    "id": "September",
+    "Unopened": 7231,
+    "Opened": 1890,
+    "Clicked": 547
+  },
+  {
+    "id": "October",
+    "Unopened": 8000,
+    "Opened": 1100,
+    "Clicked": 237
+  }
+]

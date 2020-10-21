@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import {Button, Dimmer, Divider, Header, Icon, Input, Label, Menu, Progress, Segment} from 'semantic-ui-react'
+import {Button, Dimmer, Divider, Header, Icon, Input, Label, Menu, Progress, Segment, Statistic} from 'semantic-ui-react'
+import { ResponsiveBar } from '@nivo/bar'
 import config from '../../global/config.json'
 
 const API = config.api_url
@@ -9,7 +10,15 @@ export default class Stats extends Component{
     super(props)
     this.barRef = React.createRef()
     this.state = {
-      dimmed: false
+      dimmed: false,
+      data: [
+        {
+          "id": 'Campaign',
+          "Unopened": 8000,
+          "Opened": 1100,
+          "Clicked": 237
+        }
+      ]
     }
   }
   handleStopCampaign = () => {
@@ -61,7 +70,7 @@ export default class Stats extends Component{
               <Segment>Time Remaining: 00:00:00</Segment>
               <Segment>Total Targets: 9537</Segment>
             </Segment.Group>
-            <Segment.Group horizontal style={{height: 50}}>
+            <Segment.Group horizontal>
               <Segment style={{width: 100}}>
                 <div className="column" style={{width: "100%", alignItems: "center", justifyContent: "center"}}>
                   Progress
@@ -71,7 +80,7 @@ export default class Stats extends Component{
                 <Progress attached active style={{opacity: 0.75}} percent={83} color='blue' progress/>
               </Segment>
             </Segment.Group>
-            <Segment.Group horizontal style={{height: 100}}>
+            <Segment.Group horizontal style={{height: 70}}>
               <Segment style={{width: 100}}>
                 <div className="column" style={{width: "100%", alignItems: "center", justifyContent: "center"}}>
                   Stats
@@ -80,43 +89,98 @@ export default class Stats extends Component{
               <Segment style={{width: "100%"}}>
                 <div className="row">
                   <div ref={this.barRef} style={{width: "100%"}}>
-                    <div>
-                      <Button as='div' labelPosition='right'>
-                        <Button size="mini" basic color='green'>
-                          <Icon name='mail' />
-                          Sent
-                        </Button>
-                        <Label as='a' basic color='green' pointing='left'>
-                          4379
-                        </Label>
-                      </Button>
-                      &nbsp;
-                      <Button as='div' labelPosition='right'>
-                        <Button size="mini" basic color='yellow'>
-                          <Icon name='envelope open' />
-                          Opened
-                        </Button>
-                        <Label as='a' basic color='yellow' pointing='left'>
-                          2100
-                        </Label>
-                      </Button>
-                      <Button as='div' labelPosition='right'>
-                        <Button size="mini" basic  color='red'>
-                          <Icon name='bomb' />
-                          Clicked
-                        </Button>
-                        <Label as='a' basic color='red' pointing='left'>
-                          1437
-                        </Label>
-                      </Button>
-                    </div>
-                    <div className="row" style={{opacity: 0.75}}>
-                      {this.barRef.current &&
-                        <div>
-                        </div>
-                    }{!this.barRef.current &&
-                      <div className="row"><Icon name="spinner" color="grey" size="big" loading /></div>
-                    }
+                    <div className="row" style={{opacity: 0.75, flex: 1, height: 40}}>
+                        <ResponsiveBar
+                          data={this.state.data}
+                          keys={[ 'Unopened', 'Opened', 'Clicked' ]}
+                          groupMode="grouped"
+                          padding={0.15}
+                          layout="horizontal"
+                          colorBy="id"
+                          borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+                          axisTop={null}
+                          axisRight={null}
+                          axisBottom={null}
+                          axisLeft={null}
+                          enableLabel={false}
+                          enableGridY={false}
+                          animate={true}
+                          motionStiffness={90}
+                          motionDamping={15}
+                          defs={[
+                            {
+                                id: 'sent',
+                                type: 'patternLines',
+                                background: '#388e3c',
+                                color: '#4caf50',
+                                rotation: -45,
+                                lineWidth: 2,
+                                spacing: 3
+                            },
+                          {
+                              id: 'opened',
+                              type: 'patternLines',
+                              background: '#ffa000',
+                              color: '#ffc107',
+                              rotation: -45,
+                              lineWidth: 2,
+                              spacing: 3
+                          },
+                          {
+                            id: 'clicked',
+                            type: 'patternLines',
+                            background: '#d32f2f',
+                            color: '#f44336',
+                            rotation: -45,
+                            lineWidth: 2,
+                            spacing: 3
+                          }
+                      ]}
+                      fill={[
+                          {
+                              match: {
+                                  id: 'Opened'
+                              },
+                              id: 'opened'
+                          },
+                          {
+                              match: {
+                                  id: 'Unopened'
+                              },
+                              id: 'sent'
+                          },
+                          {
+                              match: {
+                                  id: 'Clicked'
+                              },
+                              id: 'clicked'
+                          }
+                      ]}
+                      tooltip={(e) => {
+                        return(
+                          <div className="row">
+                            {e.id == "Unopened" &&
+                              <Statistic color='green' size="mini">
+                                <Statistic.Value>{e.value}</Statistic.Value>
+                                <Statistic.Label>Unopened</Statistic.Label>
+                              </Statistic>
+                            }
+                            {e.id == "Opened" &&
+                              <Statistic color='yellow' size="mini">
+                                <Statistic.Value>{e.value}</Statistic.Value>
+                                <Statistic.Label>Opened</Statistic.Label>
+                              </Statistic>
+                            }
+                            {e.id == "Clicked" &&
+                              <Statistic color='red' size="mini">
+                                <Statistic.Value>{e.value}</Statistic.Value>
+                                <Statistic.Label>Clicked</Statistic.Label>
+                              </Statistic>
+                            }
+                          </div>
+                        )
+                      }}
+                      />
                   </div>
                 </div>
               </div>
