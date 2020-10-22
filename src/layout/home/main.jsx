@@ -35,7 +35,7 @@ export default class Dashboard extends Component{
     let c = cookie.get('fp_token')
     if(c){
       let jwt = atob(c.split(".")[1])
-      this.setState({jwt: jwt})
+      this.setState({jwt: jwt, token: c})
     }
   }
   render(){
@@ -51,7 +51,7 @@ export default class Dashboard extends Component{
             <Campaigns />
           }
           {this.state.section == 'profiles' &&
-            <Profiles />
+            <Profiles token={this.state.token}/>
           }
           {this.state.section == 'templates' &&
             <Templates />

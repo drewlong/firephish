@@ -9,40 +9,41 @@ export default class Profiles extends Component{
   constructor(props){
     super(props)
     this.state = {
-      loading: true,
+      loading: false,
       editor: true,
-      dummy: [
-        {
-          name: "Gmail Profile",
-          address: "attacker@gmail.com",
-          smtp_host: "smtp.gmail.com",
-          port: 587,
-          username: "username@gmail.com",
-          password: "poqwieurpoqiuwe"
-        },
-        {
-          name: "Microsoft Teams",
-          address: "notify@teams.microsoft.t9sr.com",
-          smtp_host: "184.15.203.15",
-          port: 25,
-          username: "admin00",
-          password: "poqwieurpoqiuwe"
-        },
-        {
-          name: "HelpDesk",
-          address: "PSC_HELPDESK@psc.monitoring.jqwcom.us",
-          smtp_host: "184.15.203.15",
-          port: 25,
-          username: "admin00",
-          password: "poqwieurpoqiuwe"
-        }
-      ]
+      profiles: [],
+      profile: {}
     }
   }
   componentDidMount = () => {
-    setTimeout(() => {
-      this.setState({loading: false})
-    }, 2000)
+    this.setState({token: this.props.token})
+  }
+  collectProfiles = () => {
+
+  }
+  handleCreateProfile = () => {
+    alert(1)
+    let errors = []
+    if(!this.state.name){errors.push("Name cannot be blank.")}
+    if(!this.state.from){errors.push("Sender cannot be blank.")}
+    if(!this.state.smtp_host){errors.push("SMTP Host cannot be blank.")}
+    this.setState({errors: errors})
+    errors = []
+      Axios.post(API + 'senders/new', {
+        token: this.state.token,
+        profile_data: {
+          name: this.state.name,
+          from: this.state.from,
+          smtp_host: this.state.smtp_host,
+          port: this.state.port ? this.state.port : 25,
+          username: this.state.username,
+          password: this.state.password
+        }
+      }).then((res) => {
+        console.log(res.data)
+      }).catch((err) => {
+        console.log(err)
+      })
   }
   render(){
     return(
@@ -53,7 +54,7 @@ export default class Profiles extends Component{
         </Divider>
 
         <div className="row" style={{height: '100%'}}>
-          <div className="column" style={{flex: 1, padding: "0 20px 0 20px"}}>
+          <div className="column" style={{flex: 1, padding: "0 10px 0 10px"}}>
             <Segment.Group>
               <Segment color="teal">
                 <h3>Create New Profile</h3>
@@ -64,6 +65,21 @@ export default class Profiles extends Component{
                   <Input
                     style={{width: '100%'}}
                     placeholder="Profile Name"
+                    onChange={(e) => {this.setState({name: e.target.value})}}
+                    />
+                </div>
+                <div className="column" style={{marginBottom: 10}}>
+                  <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>Sender</Label>
+                  <Input
+                    style={{width: '100%'}}
+                    action={{
+                      basic: true,
+                      color: "teal",
+                      icon: "mail"
+                    }}
+                    actionPosition="left"
+                    placeholder="Attacker <phony_address@email.com>"
+                    onChange={(e) => {this.setState({from: e.target.value})}}
                     />
                 </div>
                 <div className="column" style={{marginBottom: 10}}>
@@ -77,6 +93,7 @@ export default class Profiles extends Component{
                     }}
                     actionPosition="left"
                     placeholder="smtp.example.com"
+                    onChange={(e) => {this.setState({smtp_host: e.target.value})}}
                     />
                 </div>
                 <div className="column" style={{marginBottom: 10}}>
@@ -90,6 +107,7 @@ export default class Profiles extends Component{
                     }}
                     actionPosition="left"
                     placeholder="25"
+                    onChange={(e) => {this.setState({port: e.target.value})}}
                     />
                 </div>
                 <div className="column" style={{marginBottom: 10}}>
@@ -103,6 +121,7 @@ export default class Profiles extends Component{
                     }}
                     actionPosition="left"
                     placeholder="Optional"
+                    onChange={(e) => {this.setState({username: e.target.value})}}
                     />
                 </div>
                 <div className="column" style={{marginBottom: 10}}>
@@ -116,12 +135,13 @@ export default class Profiles extends Component{
                     }}
                     actionPosition="left"
                     placeholder="Optional"
+                    onChange={(e) => {this.setState({password: e.target.value})}}
                     />
                 </div>
               </Segment>
               <Segment>
                 <div className="row" style={{marginBottom: 10}}>
-                  <Button color="green" fluid>Save</Button>
+                  <Button color="green" fluid onClick={this.handleCreateProfile}>Save</Button>
                 </div>
               </Segment>
             </Segment.Group>
@@ -153,7 +173,7 @@ export default class Profiles extends Component{
               </Menu>
             </div>
             <div className="column" style={{overflowY: 'scroll'}}>
-              {this.state.dummy.map((d, i) => {
+              {this.state.profiles.map((d, i) => {
                 return(
                   <Segment.Group>
                     <Segment color="yellow">
