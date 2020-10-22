@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import {Button, Icon} from 'semantic-ui-react';
+import Cookie from 'universal-cookie'
+
+const cookie = new Cookie()
 
 export default class Sidebar extends Component{
   constructor(props){
@@ -16,6 +19,10 @@ export default class Sidebar extends Component{
         this.setState({user: jwt.username})
       }
     }
+  }
+  handleLogout = () => {
+    cookie.remove("fp_token")
+   window.location = "/"
   }
   render(){
     return(
@@ -54,7 +61,7 @@ export default class Sidebar extends Component{
             {this.state.user} <br />
           </strong>
         </p>
-          <Button fluid inverted color="teal">Logout</Button>
+          <Button fluid inverted color="teal" onClick={this.handleLogout}>Logout</Button>
         </div>
       </div>
     )

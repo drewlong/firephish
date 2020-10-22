@@ -17,6 +17,7 @@
     "react": "16.8.4",
     "react-datetime-picker": "^3.0.4",
     "react-dom": "^16.13.1",
+    "react-infinite-scroller": "^1.2.4",
     "react-map-gl": "^5.2.9",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
