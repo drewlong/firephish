@@ -81,7 +81,7 @@ export default class Stats extends Component{
         <div className="column" style={{background: "#cfd8dc"}}>
           <div className="row" style={{flex: 1}}>
             <Segment style={{flex: 1, margin: 10}}>
-              <div className="column" style={{height: '40vh'}}>
+              <div className="column" style={{height: '40vh', opacity: 0.8}}>
                 <div className="row" style={{flex: 1}}>
                   <div className="column" style={{flex: 1, justifyContent: 'center', borderBottom: 'solid 1px #cfd8dc', borderRight: 'solid 1px #cfd8dc'}}>
                     <Statistic color='red'>
@@ -134,7 +134,7 @@ export default class Stats extends Component{
           </div>
           <div className="row" style={{flex: 1}}>
             <Segment style={{height: '36vh', flex: 1, margin: "0 10px 0 10px"}}>
-              <div className="column" style={{height: "100%", flex: 1}} ref={this.chartRef}>
+              <div className="column" style={{height: "100%", flex: 1, opacity: 0.8}} ref={this.chartRef}>
                 <ResponsiveBar
                   data={Dummy}
                   keys={[ 'Unopened', 'Opened', 'Clicked' ]}
@@ -149,30 +149,30 @@ export default class Stats extends Component{
                   defs={[
                     {
                         id: 'sent',
-                        type: 'patternSquares',
-                        background: '#66bb6a',
-                        color: '#4caf50',
-                        size: 2,
-                        padding: 4,
-                        stagger: true
+                        type: 'patternLines',
+                        background: '#4caf50',
+                        color: '#66bb6a',
+                        rotation: 45,
+                        lineWidth: 2,
+                        spacing: 8
                     },
                   {
                       id: 'opened',
-                      type: 'patternSquares',
-                      background: '#ffd54f',
-                      color: '#ffc107',
-                      size: 2,
-                      padding: 4,
-                      stagger: true
+                      type: 'patternLines',
+                      background: '#ffb300',
+                      color: '#ffca28',
+                      rotation: -45,
+                      lineWidth: 2,
+                      spacing: 8
                   },
                   {
                     id: 'clicked',
-                    type: 'patternSquares',
-                    background: '#e57373',
-                    color: '#f44336',
-                    size: 2,
-                    padding: 4,
-                    stagger: true
+                    type: 'patternLines',
+                    background: '#f44336',
+                    color: '#ef5350',
+                    rotation: 45,
+                    lineWidth: 2,
+                    spacing: 8
                   }
               ]}
               fill={[
