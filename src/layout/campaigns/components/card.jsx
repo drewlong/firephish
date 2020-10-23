@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import Axios from 'axios'
 import {Button, Dimmer, Divider, Header, Icon, Input, Label, Menu, Progress, Segment, Statistic} from 'semantic-ui-react'
 import { ResponsiveBar } from '@nivo/bar'
-import config from '../../global/config.json'
 
-const API = config.api_url
 export default class Stats extends Component{
   constructor(props){
     super(props)

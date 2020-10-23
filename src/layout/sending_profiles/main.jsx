@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
 import {Button, Checkbox, Dimmer, Divider, Icon, Input, Label, Menu, Message, Rating, Segment, Statistic} from 'semantic-ui-react'
-import config from '../../global/config.json'
+import InfiniteScroll from '../global/components/infinite_scroll'
+import config from '../global/config.json'
 
 const API = config.api_url
 
@@ -12,78 +13,15 @@ export default class Profiles extends Component{
     this.state = {
       available: false,
       loading: false,
-      reloading: false,
       editor: true,
       profiles: [],
       profile: {},
       created: false,
       dimmed: false,
-      errors: [],
-      current_page: 1,
-      has_more: true,
-      last_scroll: 0,
+      errors: []
     }
   }
   componentDidMount = () => {
-    this.setState({token: this.props.token})
-    setTimeout(() => {
-      this.handleRefresh()
-    }, 100)
-    let token = setInterval(() => {
-      if(this.resultRef.current){
-        console.log(this.resultRef)
-        let st = this.resultRef.current.scrollTop
-        if(st !== 0 && st > (this.resultRef.current.scrollTopMax - 10)){
-          this.setState({
-            last_scroll: st,
-            scroll_max: this.resultRef.current.scrollTopMax
-          })
-          if(this.state.has_more){
-            this.collectProfiles()
-          }
-        }
-      }
-    }, 500)
-  }
-  collectProfiles = () => {
-    this.setState({loading: true})
-    Axios.post(API + 'senders/collect', {
-      token: this.state.token,
-      page: this.state.current_page
-    }).then((res) => {
-      let page = this.state.current_page
-      let profiles = this.state.profiles
-      res.data.results.map((p, i) => {
-        profiles.push(p)
-      })
-      let uniq = new Set(profiles.map(e => JSON.stringify(e)))
-      let arr = Array.from(uniq).map(e => JSON.parse(e))
-      if(res.data.results.length > 0){
-        this.setState({current_page: page + 1, has_more: true})
-      }else{
-        this.setState({has_more: false, loading: false})
-      }
-      setTimeout(() => {
-        this.setState({profiles: arr, loading: false})
-        this.resultRef.current.scrollTop = this.state.last_scroll
-      }, 250)
-    })
-  }
-  handleRefresh = () => {
-    this.setState({reloading: true})
-    setTimeout(() => {
-      Axios.post(API + 'senders/collect', {
-        token: this.state.token,
-        page: 1
-      }).then((res) => {
-        this.setState({
-          available: true,
-          reloading: false,
-          profiles: res.data.results,
-          current_page: 2
-        })
-      })
-    }, 100)
   }
   handleCreateProfile = () => {
     let errors = []
@@ -115,10 +53,9 @@ export default class Profiles extends Component{
             created: true,
             dimmed: true
           })
-          this.handleRefresh()
+          this.setState({reload: true})
         }else{
           errors.push(res.data.message)
-          this.setState({loading: false, dimmed: true, errors: errors})
         }
       }).catch((err) => {
         console.log(err)
@@ -128,7 +65,7 @@ export default class Profiles extends Component{
     }
   }
   handleFavorites = () => {
-    
+
   }
   render(){
     return(
@@ -293,11 +230,6 @@ export default class Profiles extends Component{
                     </div>
                   </div>
                 </Menu.Item>
-                <Menu.Item>
-                  <div className="row">
-                    {this.state.last_scroll}/{this.state.scroll_max}
-                  </div>
-                </Menu.Item>
                 <Menu.Menu position='right'>
                   <Menu.Item>
                     <Input
@@ -309,94 +241,82 @@ export default class Profiles extends Component{
                 </Menu.Menu>
               </Menu>
             </div>
-            <div className="column" ref={this.resultRef} id="profiles" style={{overflow: 'auto'}}>
-              {!this.state.reloading && this.state.profiles.length > 0 && this.state.profiles.map((d, i) => {
-                    return(
-                      <Segment.Group style={{marginBottom: 20}}>
-                        <Segment color="yellow">
-                          <div className="row">
-                            <div className="row" style={{justifyContent: "flex-start"}}>
-                              <h2>{d.name}</h2>
-                            </div>
-                            <div className="row" style={{justifyContent: "flex-end"}}>
-                              <Rating icon="heart" size="huge"/>
-                            </div>
-                          </div>
-                        </Segment>
-                        <Segment.Group horizontal>
-                          <Segment style={{width: 100}}>Address</Segment>
-                          <Segment style={{width: '100%'}}>{d.from}</Segment>
-                        </Segment.Group>
-                        <Segment.Group horizontal>
-                          <Segment>
-                            <Input
-                              action={{
-                                color: "teal",
-                                icon: "globe"
-                              }}
-                              actionPosition="left"
-                              value={`${d.smtp_host}${d.port ? ":" : ""}${d.port}`}
-                              disabled
-                              />
-                          </Segment>
-                          <Segment>
-                            <Input
-                              action={{
-                                color: "teal",
-                                icon: "user"
-                              }}
-                              actionPosition="left"
-                              value={d.username}
-                              disabled
-                              />
-                          </Segment>
-                          <Segment>
-                            <Input
-                              action={{
-                                color: "teal",
-                                icon: "lock"
-                              }}
-                              actionPosition="left"
-                              value={d.password}
-                              disabled
-                              type="password"
-                              />
-                          </Segment>
-                        </Segment.Group>
-                        <Segment>
-                          <div className="row">
-                            <div style={{flex: 2}}></div>
-                            <div style={{flex: 1}}>
-                              <Button.Group fluid compact>
-                                <Button color="blue" style={{opacity: 0.9}}>Edit</Button>
-                                <Button color="red" style={{opacity: 0.9}}>Delete</Button>
-                              </Button.Group>
-                            </div>
-                          </div>
+            <InfiniteScroll
+              endpoint={API + 'senders/collect'}
+              token={this.props.token}
+              onCollect={(e) => {this.setState({profiles: e})}}
+              reload={this.state.reload}
+              reloadDone={() => {this.setState({reload: false})}}
+              >
+              {this.state.profiles.map((d, i) => {
+                return(
+                  <Segment.Group style={{marginBottom: 20}}>
+                <Segment color="yellow">
+                  <div className="row">
+                    <div className="row" style={{justifyContent: "flex-start"}}>
+                      <h2>{d.name}</h2>
+                    </div>
+                    <div className="row" style={{justifyContent: "flex-end"}}>
+                      <Rating icon="heart" size="huge"/>
+                    </div>
+                  </div>
+                </Segment>
+                <Segment.Group horizontal>
+                  <Segment style={{width: 100}}>Address</Segment>
+                  <Segment style={{width: '100%'}}>{d.from}</Segment>
+                </Segment.Group>
+                <Segment.Group horizontal>
+                  <Segment>
+                    <Input
+                      action={{
+                        color: "teal",
+                        icon: "globe"
+                      }}
+                      actionPosition="left"
+                      value={`${d.smtp_host}${d.port ? ":" : ""}${d.port}`}
+                      disabled
+                      />
+                  </Segment>
+                  <Segment>
+                    <Input
+                      action={{
+                        color: "teal",
+                        icon: "user"
+                      }}
+                      actionPosition="left"
+                      value={d.username}
+                      disabled
+                      />
+                  </Segment>
+                  <Segment>
+                    <Input
+                      action={{
+                        color: "teal",
+                        icon: "lock"
+                      }}
+                      actionPosition="left"
+                      value={d.password}
+                      disabled
+                      type="password"
+                      />
+                  </Segment>
+                </Segment.Group>
+                <Segment>
+                  <div className="row">
+                    <div style={{flex: 2}}></div>
+                    <div style={{flex: 1}}>
+                      <Button.Group fluid compact>
+                        <Button color="blue" style={{opacity: 0.9}}>Edit</Button>
+                        <Button color="red" style={{opacity: 0.9}}>Delete</Button>
+                      </Button.Group>
+                    </div>
+                  </div>
 
-                        </Segment>
-                      </Segment.Group>
-                    )
-                  })}
-
-              {this.state.reloading &&
-                <div className="row" style={{flex: 1, height: '100%', alignItems: 'center'}}>
-                  <Icon size="huge" color="grey" loading name="cog" style={{opacity: 0.75}} />
-                </div>
-              }{this.state.available && !this.state.reloading && this.state.profiles.length < 1 &&
-                <div className="row" style={{flex: 1, height: '100%', alignItems: 'center', opacity: 0.75}}>
-                  <Statistic color='green' size="big">
-                    <Statistic.Value><Icon name="envelope open outline" color="teal"/></Statistic.Value>
-                    <Statistic.Label>Nothing to see here</Statistic.Label>
-                  </Statistic>
-                </div>
-              }
-              <div className="row" >
-                {this.state.loading &&
-                  <Icon loading name="spinner" size="big" color="teal"/>
-                }
-              </div>
-            </div>
+                </Segment>
+              </Segment.Group>
+                )
+              })}
+            </InfiniteScroll>
           </div>
         </div>
       </div>

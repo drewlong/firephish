@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import config from '../../global/config.json'
+import config from '../global/config.json'
 
+// Components
 const API = config.api_url
 
 export default class Addresses extends Component{

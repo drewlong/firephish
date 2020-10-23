@@ -1,22 +1,23 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import config from '../global/config.json'
+import config from './global/config.json'
 import Cookie from 'universal-cookie'
 
 //Components
-import Header from '../global/components/header'
-import SideBar from '../global/components/sidebar'
+import Header from './global/components/header'
+import SideBar from './global/components/sidebar'
 
 // Sections
-import Stats from './components/stats'
-import Campaigns from './components/campaigns'
-import Profiles from './components/profiles'
-import Templates from './components/templates'
-import LandingPages from './components/landing_pages'
-import Attachments from './components/attachments'
-import Training from './components/training'
-import Addresses from './components/addresses'
-import Settings from './components/settings'
+import AddressBook from './address_book/main.jsx'
+import Attachments from './attachments/main.jsx'
+import Auth from './auth/main.jsx'
+import Campaigns from './campaigns/main.jsx'
+import EmailTemplates from './email_templates/main.jsx'
+import LandingPages from './landing_pages/main.jsx'
+import SendingProfiles from './sending_profiles/main.jsx'
+import Settings from './settings/main.jsx'
+import Statistics from './statistics/main.jsx'
+import Training from './training/main.jsx'
 
 // Constants
 const API = config.api_url
@@ -44,32 +45,32 @@ export default class Dashboard extends Component{
         <Header />
         <SideBar jwt={this.state.jwt}/>
         <div className="dashboard-content">
-          {this.state.section == 'stats' &&
-            <Stats />
-          }
-          {this.state.section == 'campaigns' &&
-            <Campaigns />
-          }
-          {this.state.section == 'profiles' &&
-            <Profiles token={this.state.token}/>
-          }
-          {this.state.section == 'templates' &&
-            <Templates />
-          }
-          {this.state.section == 'landing_pages' &&
-            <LandingPages />
+          {this.state.section == 'addresses' &&
+            <AddressBook />
           }
           {this.state.section == 'attachments' &&
             <Attachments />
           }
-          {this.state.section == 'training' &&
-            <Training />
+          {this.state.section == 'campaigns' &&
+            <Campaigns />
           }
-          {this.state.section == 'addresses' &&
-            <Addresses />
+          {this.state.section == 'templates' &&
+            <EmailTemplates />
+          }
+          {this.state.section == 'landing_pages' &&
+            <LandingPages />
+          }
+          {this.state.section == 'profiles' &&
+            <SendingProfiles token={this.state.token}/>
           }
           {this.state.section == 'settings' &&
             <Settings />
+          }
+          {this.state.section == 'stats' &&
+            <Statistics />
+          }
+          {this.state.section == 'training' &&
+            <Training />
           }
         </div>
       </div>

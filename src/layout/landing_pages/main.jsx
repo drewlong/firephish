@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import config from '../../global/config.json'
+import config from '../global/config.json'
 
 const API = config.api_url
 
-export default class Training extends Component{
+export default class LandingPages extends Component{
   constructor(props){
     super(props)
     this.state = {}
@@ -12,7 +12,7 @@ export default class Training extends Component{
   render(){
     return(
       <div className="dashboard-section">
-      Training
+      Landing Pages
       </div>
     )
   }

@@ -4,7 +4,7 @@ import Cookie from 'universal-cookie'
 
 // Route Components
 import Auth from './auth/main.jsx'
-import Dashboard from './home/main.jsx'
+import Dashboard from './main.jsx'
 
 const cookie = new Cookie()
 

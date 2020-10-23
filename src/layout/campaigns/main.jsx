@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import Axios from 'axios'
 import {Button, Checkbox, Divider, Dropdown, Icon, Input, Menu, Segment, Step} from 'semantic-ui-react'
 import DateTimePicker from 'react-datetime-picker';
-import config from '../../global/config.json'
+import config from '../global/config.json'
 
 // Components
-import CampaignCard from './campaign_card'
+import CampaignCard from './components/card.jsx'
 
 //Constants
 const API = config.api_url
