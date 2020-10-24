@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import Axios from 'axios'
-import {Button, Dimmer, Divider, Header, Icon, Input, Label, Menu, Progress, Segment, Statistic} from 'semantic-ui-react'
+import {Button, Dimmer, Progress, Segment, Statistic} from 'semantic-ui-react'
 import { ResponsiveBar } from '@nivo/bar'
 
 export default class Stats extends Component{
@@ -16,8 +15,12 @@ export default class Stats extends Component{
           "Opened": 1100,
           "Clicked": 237
         }
-      ]
+      ],
+      campaign: {}
     }
+  }
+  componentDidMount = () => {
+    this.setState({campaign: this.props.campaign})
   }
   handleStopCampaign = () => {
     this.setState({dimmed: false})
@@ -49,7 +52,7 @@ export default class Stats extends Component{
             <Segment color="yellow">
               <div className="row">
                 <div style={{flex: 3, color: "#546e7a", fontSize: '1.5em'}}>
-                  Campaign Name Here
+                  {this.state.campaign.name}
                 </div>
                 <div className="row" style={{flex: 1, justifyContent: 'flex-end', paddingRight: 20}}>
                   <Button.Group style={{opacity: 0.9}}>
@@ -64,7 +67,7 @@ export default class Stats extends Component{
               </div>
             </Segment>
             <Segment.Group horizontal>
-              <Segment>Start Time: 10/12/2020 13:45:00</Segment>
+              <Segment>Start Time: {this.state.campaign.start_time}</Segment>
               <Segment>Time Remaining: 00:00:00</Segment>
               <Segment>Total Targets: 9537</Segment>
             </Segment.Group>
@@ -157,19 +160,19 @@ export default class Stats extends Component{
                       tooltip={(e) => {
                         return(
                           <div className="row">
-                            {e.id == "Unopened" &&
+                            {e.id === "Unopened" &&
                               <Statistic color='green' size="mini">
                                 <Statistic.Value>{e.value}</Statistic.Value>
                                 <Statistic.Label>Unopened</Statistic.Label>
                               </Statistic>
                             }
-                            {e.id == "Opened" &&
+                            {e.id === "Opened" &&
                               <Statistic color='yellow' size="mini">
                                 <Statistic.Value>{e.value}</Statistic.Value>
                                 <Statistic.Label>Opened</Statistic.Label>
                               </Statistic>
                             }
-                            {e.id == "Clicked" &&
+                            {e.id === "Clicked" &&
                               <Statistic color='red' size="mini">
                                 <Statistic.Value>{e.value}</Statistic.Value>
                                 <Statistic.Label>Clicked</Statistic.Label>

@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
-import Axios from 'axios'
-import {Button, Checkbox, Divider, Dropdown, Icon, Input, Label, Menu, Message, Segment} from 'semantic-ui-react'
-import { Sandbox, withDependencies } from "react-sandbox-editor"
-import config from '../global/config.json'
-
-const API = config.api_url
+import {Button, Checkbox, Divider, Dropdown, Icon, Input, Menu, Message} from 'semantic-ui-react'
+import { Sandbox } from "react-sandbox-editor"
 
 export default class Templates extends Component{
   constructor(props){

@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import Axios from 'axios'
-import config from './global/config.json'
 import Cookie from 'universal-cookie'
 
 //Components
@@ -10,7 +8,6 @@ import SideBar from './global/components/sidebar'
 // Sections
 import AddressBook from './address_book/main.jsx'
 import Attachments from './attachments/main.jsx'
-import Auth from './auth/main.jsx'
 import Campaigns from './campaigns/main.jsx'
 import EmailTemplates from './email_templates/main.jsx'
 import LandingPages from './landing_pages/main.jsx'
@@ -20,7 +17,6 @@ import Statistics from './statistics/main.jsx'
 import Training from './training/main.jsx'
 
 // Constants
-const API = config.api_url
 const cookie = new Cookie()
 
 export default class Dashboard extends Component{
@@ -45,32 +41,32 @@ export default class Dashboard extends Component{
         <Header />
         <SideBar jwt={this.state.jwt}/>
         <div className="dashboard-content">
-          {this.state.section == 'addresses' &&
-            <AddressBook />
+          {this.state.section === 'addresses' &&
+            <AddressBook token={this.state.token} />
           }
-          {this.state.section == 'attachments' &&
-            <Attachments />
+          {this.state.section === 'attachments' &&
+            <Attachments  token={this.state.token}/>
           }
-          {this.state.section == 'campaigns' &&
-            <Campaigns />
+          {this.state.section === 'campaigns' &&
+            <Campaigns  token={this.state.token}/>
           }
-          {this.state.section == 'templates' &&
-            <EmailTemplates />
+          {this.state.section === 'templates' &&
+            <EmailTemplates  token={this.state.token}/>
           }
-          {this.state.section == 'landing_pages' &&
-            <LandingPages />
+          {this.state.section === 'landing_pages' &&
+            <LandingPages  token={this.state.token}/>
           }
-          {this.state.section == 'profiles' &&
+          {this.state.section === 'profiles' &&
             <SendingProfiles token={this.state.token}/>
           }
-          {this.state.section == 'settings' &&
-            <Settings />
+          {this.state.section === 'settings' &&
+            <Settings  token={this.state.token}/>
           }
-          {this.state.section == 'stats' &&
-            <Statistics />
+          {this.state.section === 'stats' &&
+            <Statistics  token={this.state.token}/>
           }
-          {this.state.section == 'training' &&
-            <Training />
+          {this.state.section === 'training' &&
+            <Training  token={this.state.token}/>
           }
         </div>
       </div>

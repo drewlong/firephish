@@ -1,8 +1,4 @@
 import React, { Component } from 'react'
-import Axios from 'axios'
-import config from '../global/config.json'
-
-const API = config.api_url
 
 export default class Attachments extends Component{
   constructor(props){

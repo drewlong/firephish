@@ -22,7 +22,7 @@ export default class Auth extends Component{
     if(!this.state.username){errors.push("Username cannot be blank")}
     if(!this.state.password){errors.push("Password cannot be blank")}
     this.setState({errors: errors})
-    if(errors.length == 0){
+    if(errors.length === 0){
       Axios.post(API + 'users/login', {
         username: this.state.username,
         password: this.state.password
@@ -43,7 +43,7 @@ export default class Auth extends Component{
     return(
       <div className="auth-main">
       <div className="big_logo">
-        <img src={Logo} />
+        <img alt="logo" src={Logo} />
       </div>
 
         <div className="auth-box">

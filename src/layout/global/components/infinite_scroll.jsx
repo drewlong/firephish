@@ -25,7 +25,7 @@ export default class Addresses extends Component{
     setTimeout(() => {
       this.handleRefresh()
     }, 100)
-    let token = setInterval(() => {
+    setInterval(() => {
       if(this.resultRef.current){
         console.log(this.resultRef)
         let st = this.resultRef.current.scrollTop
@@ -51,6 +51,7 @@ export default class Addresses extends Component{
       let results = this.state.results
       res.data.results.map((p, i) => {
         results.push(p)
+        return null
       })
       let uniq = new Set(results.map(e => JSON.stringify(e)))
       let arr = Array.from(uniq).map(e => JSON.parse(e))

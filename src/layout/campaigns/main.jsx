@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import {Button, Checkbox, Divider, Dropdown, Icon, Input, Menu, Segment, Step} from 'semantic-ui-react'
+import Moment from 'moment'
+import {Button, Checkbox, Divider, Dropdown, Icon, Input, Menu, Segment} from 'semantic-ui-react'
 import DateTimePicker from 'react-datetime-picker';
 import config from '../global/config.json'
 
 // Components
 import CampaignCard from './components/card.jsx'
+import InfiniteScroll from '../global/components/infinite_scroll'
 
 //Constants
 const API = config.api_url
@@ -15,6 +17,8 @@ export default class Campaigns extends Component{
     super(props)
     this.state = {
       blanks: [],
+      campaigns: [],
+      reload: false,
       loading: true,
       activeItem: 'active',
       editor: false,
@@ -23,48 +27,43 @@ export default class Campaigns extends Component{
         {key: 'basic', text: 'Generic', value: 'basic' },
        { key: 'microsoft', text: 'Microsoft Password Reset', value: 'microsoft' }
       ],
-      start_date: false,
+      start_time: Moment().format(),
       send_date: false,
-      end_date: false
+      end_date: false,
+      senders: []
     }
   }
   componentDidMount = () => {
     setTimeout(() => {
       this.setState({loading: false})
     }, 2000)
+    this.setState({token: this.props.token})
+    setTimeout(() => {this.collectSenders()}, 100)
   }
   handleItemClick = (e) => {
     this.setState({
       activeItem: e
     })
   }
-  handleCancel = () => {
-    this.setState({
-      start_time: null,
-      end_time: null,
-      send_by_time: null,
-      attachment: false,
-      editor: false
-    })
-  }
   handleCampaignCreate = () => {
     this.setState({blanks: []})
     let blanks = this.checkFields()
+    blanks = []
     this.setState({blanks: blanks})
     if(blanks.length === 0){
       Axios.post(API + 'campaigns/new', {
-        token: this.props.token,
+        token: this.state.token,
         campaign_data: {
-          name: this.state.name,
-          domain: this.state.domain,
-          sender: this.state.sender,
-          template: this.state.template,
-          attachment: this.state.attachment,
-          landing_page: this.state.landing_page,
-          start_time: this.state.landing_page,
-          send_by: this.state.send_by,
-          completed_at: this.state.completed_at
-        }
+        name: this.state.name,
+        domain: this.state.domain,
+        sender: this.state.sender,
+        template: this.state.template,
+        attachment: this.state.attachment,
+        landing_page: this.state.landing_page,
+        start_time: this.state.start_time,
+        send_by: this.state.send_by,
+        completed_at: this.state.completed_at
+      }
       }).then((res) => {
         console.log(res.data)
       })
@@ -78,11 +77,45 @@ export default class Campaigns extends Component{
     ]
     fields.map((f, i) => {
       if(!this.state[f]){blanks.push(f)}
+      return null
     })
     return blanks
   }
   handleEmailTemplate = () => {
     this.setState({blanks: []})
+  }
+  collectSenders = () => {
+    Axios.post(API + 'senders/collect', {
+      token: this.state.token
+    }).then((res) => {
+      let senders = []
+      res.data.results.map((s, i) => {
+        let rec = {
+          key: s.id,
+          text: s.name,
+          value: s.from
+        }
+        senders.push(rec)
+        return null
+      })
+      this.setState({senders: senders})
+    })
+  }
+  handleSwitchView = () => {
+    let editor = this.state.editor ? false : true
+    if(editor && this.state.senders === []){
+        this.collectSenders()
+    }
+    if(!editor){
+      this.setState({
+        start_time: null,
+        end_time: null,
+        send_by_time: null,
+        attachment: false,
+        blanks: []
+      })
+    }
+    this.setState({editor: editor})
   }
   render(){
     return(
@@ -118,7 +151,7 @@ export default class Campaigns extends Component{
                     <div className="row" style={{marginBottom: 10}}>
                       <Input
                         style={{flex: 1}}
-                        value={this.state.name}
+                        value={this.state.domain}
                         onChange={(e) => {this.setState({domain: e.target.value, blanks:[]})}}
                         error={this.state.blanks.includes("domain")}
                         placeholder="IP or URL of webserver"/>
@@ -134,8 +167,9 @@ export default class Campaigns extends Component{
                         placeholder='Select Sender'
                         search
                         selection
-                        options={this.state.email_templates}
-                        onChange={this.handleEmailTemplate}
+                        options={this.state.senders}
+                        value={this.state.sender}
+                        onChange={(e, obj) => {this.setState({sender: obj.value})}}
                         />
                     </div>
                     <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
@@ -211,8 +245,8 @@ export default class Campaigns extends Component{
                         <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
                           <DateTimePicker
                             disableClock
-                            onChange={(val, e) => {this.setState({start_time: val})}}
-                            value={this.state.start_time}
+                            onChange={(val, e) => {this.setState({send_by: val})}}
+                            value={this.state.send_by}
                           />
                         </div>
                         <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
@@ -221,8 +255,8 @@ export default class Campaigns extends Component{
                         <div className="row" style={{justifyContent: 'flex-start', }}>
                           <DateTimePicker
                             disableClock
-                            onChange={(val, e) => {this.setState({start_time: val})}}
-                            value={this.state.start_time}
+                            onChange={(val, e) => {this.setState({completed_at: val})}}
+                            value={this.state.completed_at}
                           />
                         </div>
                       </div>
@@ -232,7 +266,7 @@ export default class Campaigns extends Component{
                 <Segment>
                   <Button.Group fluid style={{opacity: 0.9}}>
                     <Button color="teal" onClick={this.handleCampaignCreate}>Save</Button>
-                    <Button color="red" onClick={() => {this.handleCancel(); this.setState({blanks: []})}}>Cancel</Button>
+                    <Button color="red" onClick={() => {this.handleSwitchView()}}>Cancel</Button>
                   </Button.Group>
                 </Segment>
               </Segment.Group>
@@ -262,7 +296,7 @@ export default class Campaigns extends Component{
                 icon='plus'
                 labelPosition='left'
                 color="teal"
-                onClick={() => {this.setState({editor: true})}}
+                onClick={this.handleSwitchView}
                 />
             </Menu.Item>
             <Menu.Menu position='right'>
@@ -271,14 +305,21 @@ export default class Campaigns extends Component{
               </Menu.Item>
             </Menu.Menu>
           </Menu>
-          {this.state.activeItem == 'active' &&
-            <Segment style={{overflowY: "scroll", height: "calc(100% - 130px)"}}>
-              <CampaignCard />
-              <CampaignCard />
-              <CampaignCard />
-              <CampaignCard />
-            </Segment>
-          }{this.state.activeItem == 'inactive' &&
+          {this.state.activeItem === 'active' &&
+              <InfiniteScroll
+                endpoint={API + 'campaigns/collect'}
+                token={this.props.token}
+                onCollect={(e) => {this.setState({campaigns: e})}}
+                reload={this.state.reload}
+                reloadDone={() => {this.setState({reload: false})}}
+                >
+                {this.state.campaigns.map((c, i) => {
+                  return(
+                    <CampaignCard campaign={c} />
+                  )
+                })}
+              </InfiniteScroll>
+          }{this.state.activeItem === 'inactive' &&
             <div className="column">
               inactive campaigns
             </div>

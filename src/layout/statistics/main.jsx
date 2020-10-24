@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
-import Axios from 'axios'
 import MapGL, {Marker} from 'react-map-gl';
 import {Divider, Icon,Segment, Statistic} from 'semantic-ui-react'
 import { ResponsiveBar } from '@nivo/bar'
-import config from '../global/config.json'
 import MARKER_STYLE from './../dummy_data/marker_style';
 import dummy from './../dummy_data/map_dummy_data.json'
 import Dummy from '../dummy_data/dummy_stats.json'
-const API = config.api_url
 
 export default class Stats extends Component{
   constructor(props){
@@ -26,10 +23,9 @@ export default class Stats extends Component{
     }
   }
   componentDidMount = () => {
-    let token = setInterval(() => {
+    setInterval(() => {
       let viewport = this.state.viewport
       let c = this.mapRef.current
-      let ch = this.chartRef.current
       if(c){
         viewport.width = c.offsetWidth
         viewport.height = c.offsetHeight
@@ -206,21 +202,21 @@ export default class Stats extends Component{
               tooltip={(e) => {
                 return(
                   <div className="row">
-                    {e.id == "Unopened" &&
+                    {e.id === "Unopened" &&
                       <Statistic color='green' size="mini">
                         <Statistic.Label>{e.data.id}</Statistic.Label>
                         <Statistic.Value>{e.value}</Statistic.Value>
                         <Statistic.Label>Unopened</Statistic.Label>
                       </Statistic>
                     }
-                    {e.id == "Opened" &&
+                    {e.id === "Opened" &&
                       <Statistic color='yellow' size="mini">
                         <Statistic.Label>{e.data.id}</Statistic.Label>
                         <Statistic.Value>{e.value}</Statistic.Value>
                         <Statistic.Label>Opened</Statistic.Label>
                       </Statistic>
                     }
-                    {e.id == "Clicked" &&
+                    {e.id === "Clicked" &&
                       <Statistic color='red' size="mini">
                         <Statistic.Label>{e.data.id}</Statistic.Label>
                         <Statistic.Value>{e.value}</Statistic.Value>
