@@ -28,8 +28,14 @@ export default class Auth extends Component{
         password: this.state.password
       }).then((res) => {
         console.log(res.data)
-        cookie.set("fp_token", res.data.token, {sameSite: 'lax'})
-        this.props.history.push('/dashboard/stats')
+        if(res.data.status === 200){
+
+          cookie.set("fp_token", res.data.token, {sameSite: 'lax'})
+          this.props.history.push('/dashboard/stats')
+        }else{
+          errors.push("Username or password is incorrect")
+          this.setState({errors: errors})
+        }
       }).catch((err) => {})
     }
   }

@@ -14,6 +14,7 @@ export default class Campaigns extends Component{
   constructor(props){
     super(props)
     this.state = {
+      blanks: [],
       loading: true,
       activeItem: 'active',
       editor: false,
@@ -46,6 +47,43 @@ export default class Campaigns extends Component{
       editor: false
     })
   }
+  handleCampaignCreate = () => {
+    this.setState({blanks: []})
+    let blanks = this.checkFields()
+    this.setState({blanks: blanks})
+    if(blanks.length === 0){
+      Axios.post(API + 'campaigns/new', {
+        token: this.props.token,
+        campaign_data: {
+          name: this.state.name,
+          domain: this.state.domain,
+          sender: this.state.sender,
+          template: this.state.template,
+          attachment: this.state.attachment,
+          landing_page: this.state.landing_page,
+          start_time: this.state.landing_page,
+          send_by: this.state.send_by,
+          completed_at: this.state.completed_at
+        }
+      }).then((res) => {
+        console.log(res.data)
+      })
+    }
+  }
+  checkFields = () => {
+    let blanks = []
+    let fields = [
+      "name", "domain", "sender", "template",
+      "landing_page", "start_time"
+    ]
+    fields.map((f, i) => {
+      if(!this.state[f]){blanks.push(f)}
+    })
+    return blanks
+  }
+  handleEmailTemplate = () => {
+    this.setState({blanks: []})
+  }
   render(){
     return(
       <div className="dashboard-section">
@@ -67,19 +105,30 @@ export default class Campaigns extends Component{
                       <h4>Name</h4>
                     </div>
                     <div className="row" style={{marginBottom: 10}}>
-                      <Input style={{flex: 1}}/>
+                      <Input
+                        style={{flex: 1}}
+                        value={this.state.name}
+                        onChange={(e) => {this.setState({name: e.target.value, blanks:[]})}}
+                        error={this.state.blanks.includes("name")}
+                        />
                     </div>
                     <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
                       <h4>Phishing Domain</h4>
                     </div>
                     <div className="row" style={{marginBottom: 10}}>
-                      <Input style={{flex: 1}} placeholder="IP or URL of webserver"/>
+                      <Input
+                        style={{flex: 1}}
+                        value={this.state.name}
+                        onChange={(e) => {this.setState({domain: e.target.value, blanks:[]})}}
+                        error={this.state.blanks.includes("domain")}
+                        placeholder="IP or URL of webserver"/>
                     </div>
                     <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
                       <h4>Sender</h4>
                     </div>
                     <div className="row" style={{marginBottom: 10}}>
                       <Dropdown
+                        error={this.state.blanks.includes("sender")}
                         fluid
                         style={{minWidth: 250}}
                         placeholder='Select Sender'
@@ -94,6 +143,7 @@ export default class Campaigns extends Component{
                     </div>
                     <div className="row" style={{marginBottom: 10}}>
                       <Dropdown
+                        error={this.state.blanks.includes("template")}
                         fluid
                         style={{minWidth: 250}}
                         placeholder='Select Attachment'
@@ -134,6 +184,7 @@ export default class Campaigns extends Component{
                         </div>
                         <div className="row" style={{marginBottom: 10}}>
                           <Dropdown
+                            error={this.state.blanks.includes("landing_page")}
                             fluid
                             style={{minWidth: 250}}
                             placeholder='Select Landing Page'
@@ -148,6 +199,7 @@ export default class Campaigns extends Component{
                         </div>
                         <div className="row" style={{justifyContent: 'flex-start', marginBottom: 5}}>
                           <DateTimePicker
+                            error={this.state.blanks.includes("start_time")}
                             disableClock
                             onChange={(val, e) => {this.setState({start_time: val})}}
                             value={this.state.start_time}
@@ -179,8 +231,8 @@ export default class Campaigns extends Component{
                 </Segment>
                 <Segment>
                   <Button.Group fluid style={{opacity: 0.9}}>
-                    <Button color="teal">Save</Button>
-                    <Button color="red" onClick={this.handleCancel}>Cancel</Button>
+                    <Button color="teal" onClick={this.handleCampaignCreate}>Save</Button>
+                    <Button color="red" onClick={() => {this.handleCancel(); this.setState({blanks: []})}}>Cancel</Button>
                   </Button.Group>
                 </Segment>
               </Segment.Group>
