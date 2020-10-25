@@ -22,7 +22,7 @@ export default class Sidebar extends Component{
   }
   handleLogout = () => {
     cookie.remove("fp_token")
-   window.location = "/"
+    window.location = "/"
   }
   render(){
     return(
