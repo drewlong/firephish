@@ -69,6 +69,9 @@ body{
   left: 300px;
   padding: 20px;
 }
+.slide-editor{
+  height: 100%
+}
 /* GLOBAL */
 .big_logo{
   width: 400px;
@@ -104,6 +107,9 @@ body{
   width: 200px;
   height: auto;
   margin: 5px;
+}
+.sectionWord::first-letter{
+  text-transform:capitalize;
 }
 .header{
   width: 100%;

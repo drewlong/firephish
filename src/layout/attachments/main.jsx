@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {Divider, Icon} from 'semantic-ui-react'
 
 export default class Attachments extends Component{
   constructor(props){
@@ -8,7 +9,10 @@ export default class Attachments extends Component{
   render(){
     return(
       <div className="dashboard-section">
-      Attachments
+        <h1>Attachments</h1>
+        <Divider horizontal>
+            <Icon name="ellipsis horizontal" color={this.state.loading ? "teal" : "grey"} loading={this.state.loading}/>
+        </Divider>
       </div>
     )
   }

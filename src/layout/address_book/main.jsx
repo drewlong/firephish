@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
+import {Divider, Icon} from 'semantic-ui-react'
 
-// Components
-
-export default class Addresses extends Component{
+export default class AddressBook extends Component{
   constructor(props){
     super(props)
     this.state = {}
@@ -10,7 +9,10 @@ export default class Addresses extends Component{
   render(){
     return(
       <div className="dashboard-section">
-      Address Book
+        <h1>Address Book</h1>
+        <Divider horizontal>
+            <Icon name="ellipsis horizontal" color={this.state.loading ? "teal" : "grey"} loading={this.state.loading}/>
+        </Divider>
       </div>
     )
   }

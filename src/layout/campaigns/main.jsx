@@ -289,6 +289,11 @@ export default class Campaigns extends Component{
               active={this.state.activeItem === 'inactive'}
               onClick={() => {this.handleItemClick("inactive")}}
               />
+            <Menu.Item
+              name='templates'
+              active={this.state.activeItem === 'templates'}
+              onClick={() => {this.handleItemClick("templates")}}
+              />
             <Menu.Item>
               <Button
                 basic
@@ -322,6 +327,10 @@ export default class Campaigns extends Component{
           }{this.state.activeItem === 'inactive' &&
             <div className="column">
               inactive campaigns
+            </div>
+          }{this.state.activeItem === 'templates' &&
+            <div className="column">
+              Campaign Templates
             </div>
           }
         </div>

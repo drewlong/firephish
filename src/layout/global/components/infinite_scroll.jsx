@@ -74,14 +74,23 @@ export default class Addresses extends Component{
         token: this.state.token,
         page: 1
       }).then((res) => {
-        this.setState({
-          available: true,
-          reloading: false,
-          results: res.data.results,
-          page: 2
-        })
-        this.props.reloadDone()
-        this.props.onCollect(res.data.results)
+        if(res.data.status === 200){
+          this.setState({
+            available: true,
+            reloading: false,
+            results: res.data.results,
+            page: 2
+          })
+          this.props.reloadDone()
+          this.props.onCollect(res.data.results)
+        }else{
+          this.setState({
+            available: true,
+            reloading: false,
+            results: [],
+            page: 1
+          })
+        }
       })
     }, 100)
   }
