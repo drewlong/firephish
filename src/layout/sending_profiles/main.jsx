@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import {Button, Checkbox, Dimmer, Divider, Icon, Input, Label, Menu, Message, Rating, Segment, Statistic} from 'semantic-ui-react'
+import {Button, Checkbox, Dimmer, Dropdown, Divider, Icon, Input, Label, Menu, Message, Rating, Segment, Statistic} from 'semantic-ui-react'
 import InfiniteScroll from '../global/components/infinite_scroll'
 import config from '../global/config.json'
 
-import ProfileCard from './components/card'
+import ProfileCard from './components/profile_card'
+import HostCard from './components/host_card'
 
 const API = config.api_url
 
@@ -16,12 +17,16 @@ export default class Profiles extends Component{
       available: false,
       loading: false,
       editor: true,
+      host: {},
+      hosts: [],
       profiles: [],
       profile: {},
       created: false,
       dimmed: false,
       errors: [],
-      dimmed_card: null
+      dimmed_card: null,
+      loading_delete: null,
+      active: 'profiles'
     }
   }
   componentDidMount = () => {
@@ -39,10 +44,7 @@ export default class Profiles extends Component{
         profile_data: {
           name: this.state.name,
           from: this.state.from,
-          smtp_host: this.state.smtp_host,
-          port: this.state.port ? this.state.port : 25,
-          username: this.state.username,
-          password: this.state.password
+          host_id: this.state.host.guid,
         }
       }).then((res) => {
         if(res.data.status === 200){
@@ -69,26 +71,12 @@ export default class Profiles extends Component{
     }
   }
   handleDelete = (id) => {
-    this.setState({loading: true})
+    this.setState({loading_delete: id})
     Axios.post(API + 'senders/delete', {
       token: this.state.token,
       id: id
     }).then((res) => {
-      this.setState({loading: false, reload: true, dimmed_card: null})
-    })
-  }
-  handleEdit = () => {
-      this.setState({loading: true})
-    Axios.post(API + 'senders/edit', {
-      token: this.state.token,
-      name: this.state.name,
-      from: this.state.from,
-      smtp_host: this.state.smtp_host,
-      port: this.state.port,
-      username: this.state.username,
-      password: this.state.password
-    }).then((res) => {
-      this.setState({loading: false, reload: true})
+      this.setState({loading_delete: null, reload: true, dimmed_card: null})
     })
   }
   handleFavorite = (id, b) => {
@@ -146,7 +134,8 @@ export default class Profiles extends Component{
               }
             </Dimmer>
             <div className="column" style={{flex: 1, padding: "0 10px 0 10px"}}>
-            <Segment.Group>
+              {this.state.active === 'profiles' &&
+                <Segment.Group>
               <Segment color="teal">
                 <h3>Create New Profile</h3>
               </Segment>
@@ -177,64 +166,16 @@ export default class Profiles extends Component{
                 </div>
                 <div className="column" style={{marginBottom: 10}}>
                   <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>SMTP Host</Label>
-                  <Input
-                    value={this.state.smtp_host}
-                    style={{width: '100%'}}
-                    action={{
-                      basic: true,
-                      color: "teal",
-                      icon: "globe"
-                    }}
-                    actionPosition="left"
-                    placeholder="smtp.example.com"
-                    onChange={(e) => {this.setState({smtp_host: e.target.value})}}
-                    />
-                </div>
-                <div className="column" style={{marginBottom: 10}}>
-                  <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>SMTP Port</Label>
-                  <Input
-                    value={this.state.port}
-                    style={{width: '100%'}}
-                    action={{
-                      basic: true,
-                      color: "teal",
-                      icon: "hashtag"
-                    }}
-                    actionPosition="left"
-                    placeholder="25"
-                    onChange={(e) => {this.setState({port: e.target.value})}}
-                    />
-                </div>
-                <div className="column" style={{marginBottom: 10}}>
-                  <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>Username</Label>
-                  <Input
-                    value={this.state.username}
-                    style={{width: '100%'}}
-                    action={{
-                      basic: true,
-                      color: "teal",
-                      icon: "user"
-                    }}
-                    actionPosition="left"
-                    placeholder="Optional"
-                    onChange={(e) => {this.setState({username: e.target.value})}}
-                    />
-                </div>
-                <div className="column" style={{marginBottom: 10}}>
-                  <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>Password</Label>
-                  <Input
-                    value={this.state.password}
-                    style={{width: '100%'}}
-                    action={{
-                      basic: true,
-                      color: "teal",
-                      icon: "lock"
-                    }}
-                    type="password"
-                    actionPosition="left"
-                    placeholder="Optional"
-                    onChange={(e) => {this.setState({password: e.target.value})}}
-                    />
+                    <Dropdown
+                      fluid
+                      style={{minWidth: 250}}
+                      placeholder='Select Host'
+                      search
+                      selection
+                      options={this.state.hosts}
+                      value={this.state.host}
+                      onChange={(e, obj) => {this.setState({host: obj.value})}}
+                      />
                 </div>
               </Segment>
               <Segment>
@@ -243,7 +184,91 @@ export default class Profiles extends Component{
                 </div>
               </Segment>
             </Segment.Group>
-          </div>
+              }{this.state.active === 'hosts' &&
+                <Segment.Group>
+                  <Segment color="teal">
+                    <h3>Create New Host</h3>
+                  </Segment>
+                  <Segment>
+                    <div className="column" style={{marginBottom: 10}}>
+                      <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>SMTP Host Name</Label>
+                      <Input
+                        value={this.state.host_name}
+                        style={{width: '100%'}}
+                        placeholder="e.g., 'Gmail', 'Home Server', etc"
+                        onChange={(e) => {this.setState({name: e.target.value})}}
+                        />
+                    </div>
+                    <div className="column" style={{marginBottom: 10}}>
+                      <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>Host Address</Label>
+                      <Input
+                        value={this.state.smtp_host}
+                        style={{width: '100%'}}
+                        action={{
+                          basic: true,
+                          color: "teal",
+                          icon: "globe"
+                        }}
+                        actionPosition="left"
+                        placeholder="smtp.example.com"
+                        onChange={(e) => {this.setState({smtp_host: e.target.value})}}
+                        />
+                    </div>
+                    <div className="column" style={{marginBottom: 10}}>
+                      <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>Port Number</Label>
+                      <Input
+                        value={this.state.port}
+                        style={{width: '100%'}}
+                        action={{
+                          basic: true,
+                          color: "teal",
+                          icon: "hashtag"
+                        }}
+                        actionPosition="left"
+                        placeholder="25"
+                        onChange={(e) => {this.setState({port: e.target.value})}}
+                        />
+                    </div>
+                    <div className="column" style={{marginBottom: 10}}>
+                      <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>Username</Label>
+                      <Input
+                        value={this.state.username}
+                        style={{width: '100%'}}
+                        action={{
+                          basic: true,
+                          color: "teal",
+                          icon: "user"
+                        }}
+                        actionPosition="left"
+                        placeholder="Optional"
+                        onChange={(e) => {this.setState({username: e.target.value})}}
+                        />
+                    </div>
+                    <div className="column" style={{marginBottom: 10}}>
+                      <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>Password</Label>
+                      <Input
+                        value={this.state.password}
+                        style={{width: '100%'}}
+                        action={{
+                          basic: true,
+                          color: "teal",
+                          icon: "lock"
+                        }}
+                        type="password"
+                        actionPosition="left"
+                        placeholder="Optional"
+                        onChange={(e) => {this.setState({password: e.target.value})}}
+                        />
+                    </div>
+                  </Segment>
+                  <Segment>
+                    <div className="row" style={{marginBottom: 10}}>
+                      <Button color="green" fluid onClick={this.handleCreateHost}>Save</Button>
+                    </div>
+                  </Segment>
+                </Segment.Group>
+              }
+            </div>
           </Dimmer.Dimmable>
           <div className="column" style={{
               flex: 2,
@@ -252,19 +277,29 @@ export default class Profiles extends Component{
               height: "calc(100% - 65px)",
             }}>
             <div className="row" style={{marginBottom: 20}}>
-              <Menu attached>
-                <Menu.Item>
-                  <div className="row">
-                    <div className="row">
-                      <h4>Favorites:</h4>
-                    </div>
-                    <span>&nbsp;&nbsp;&nbsp;</span>
-                    <div className="row">
-                      <Checkbox toggle disabled={this.state.loading || this.state.profiles.length < 1}/>
-                    </div>
-                  </div>
-                </Menu.Item>
+              <Menu pointing style={{width: '100%'}}>
+                <Menu.Item
+                  name='Profiles'
+                  active={this.state.active === 'profiles'}
+                  onClick={() => {this.setState({active: 'profiles'})}}
+                  />
+                <Menu.Item
+                  name='SMTP Hosts'
+                  active={this.state.active === 'hosts'}
+                  onClick={() => {this.setState({active: 'hosts'})}}
+                  />
                 <Menu.Menu position='right'>
+                  <Menu.Item>
+                    <div className="row">
+                      <div className="row">
+                        <h4>Favorites:</h4>
+                      </div>
+                      <span>&nbsp;&nbsp;&nbsp;</span>
+                      <div className="row">
+                        <Checkbox toggle disabled={this.state.loading || this.state.profiles.length < 1}/>
+                      </div>
+                    </div>
+                  </Menu.Item>
                   <Menu.Item>
                     <Input
                       disabled={this.state.loading || this.state.profiles.length < 1}
@@ -275,7 +310,8 @@ export default class Profiles extends Component{
                 </Menu.Menu>
               </Menu>
             </div>
-            <InfiniteScroll
+            {this.state.active === 'profiles' &&
+              <InfiniteScroll
               endpoint={API + 'senders/collect'}
               token={this.props.token}
               onCollect={(e) => {this.setState({profiles: e})}}
@@ -300,8 +336,8 @@ export default class Profiles extends Component{
                           </div>
                           <div style={{flex: 1}}></div>
                           <div className="row" style={{flex: 1}}>
-                            <Button color="green" onClick={() => {this.handleDelete(d.id)}}>Yes</Button>
-                            <Button color="red" onClick={() => this.setState({dimmed_card: null})}>No</Button>
+                            <Button color="green" loading={this.state.loading_delete === d.id} onClick={() => {this.handleDelete(d.id)}}>Yes</Button>
+                            <Button color="red" loading={this.state.loading_delete === d.id} onClick={() => this.setState({dimmed_card: null})}>No</Button>
                           </div>
                         </div>
                       </Dimmer>
@@ -311,6 +347,45 @@ export default class Profiles extends Component{
                 )
               })}
             </InfiniteScroll>
+            }
+            {this.state.active === 'hosts' &&
+              <InfiniteScroll
+              endpoint={API + 'smtp_hosts/collect'}
+              token={this.props.token}
+              onCollect={(e) => {this.setState({hosts: e})}}
+              reload={this.state.reload}
+              reloadDone={() => {this.setState({reload: false})}}
+              >
+              {this.state.hosts.map((d, i) => {
+                return(
+                  <div style={{marginBottom: 20}}>
+                    <Dimmer.Dimmable blurring dimmed={this.state.dimmed_card === d.id}>
+                      <Dimmer
+                        inverted
+                        active={this.state.dimmed_card === d.id}
+                        onClickOutside={() => {this.setState({dimmed_card: null})}}
+                        verticalAlign="middle"
+                        >
+                        <div className="column">
+                          <div className="row" style={{flex: 1}}>
+                            <h3>
+                              Delete host?
+                            </h3>
+                          </div>
+                          <div style={{flex: 1}}></div>
+                          <div className="row" style={{flex: 1}}>
+                            <Button color="green" loading={this.state.loading_delete === d.id} onClick={() => {this.handleDelete(d.id)}}>Yes</Button>
+                            <Button color="red" loading={this.state.loading_delete === d.id} onClick={() => this.setState({dimmed_card: null})}>No</Button>
+                          </div>
+                        </div>
+                      </Dimmer>
+                      <HostCard token={this.state.token} data={d} deleteCall={() => {this.setState({dimmed_card: d.id})}}/>
+                    </Dimmer.Dimmable>
+                  </div>
+                )
+              })}
+            </InfiniteScroll>
+            }
           </div>
         </div>
       </div>

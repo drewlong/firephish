@@ -41,6 +41,11 @@ export default class Addresses extends Component{
       }
     }, 500)
   }
+  componentDidUpdate = (prevProps, prevState) => {
+    if(prevProps.reload !== this.props.reload && this.props.reload === true){
+      this.handleRefresh()
+    }
+  }
   collectResults = () => {
     this.setState({loading: true})
     Axios.post(this.state.endpoint, {
