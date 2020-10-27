@@ -4,6 +4,8 @@ import {Button, Checkbox, Dimmer, Divider, Icon, Input, Label, Menu, Message, Ra
 import InfiniteScroll from '../global/components/infinite_scroll'
 import config from '../global/config.json'
 
+import ProfileCard from './components/card'
+
 const API = config.api_url
 
 export default class Profiles extends Component{
@@ -18,10 +20,12 @@ export default class Profiles extends Component{
       profile: {},
       created: false,
       dimmed: false,
-      errors: []
+      errors: [],
+      dimmed_card: null
     }
   }
   componentDidMount = () => {
+    this.setState({token: this.props.token})
   }
   handleCreateProfile = () => {
     let errors = []
@@ -64,8 +68,38 @@ export default class Profiles extends Component{
       this.setState({dimmed: true, errors: errors})
     }
   }
-  handleFavorites = () => {
-
+  handleDelete = (id) => {
+    this.setState({loading: true})
+    Axios.post(API + 'senders/delete', {
+      token: this.state.token,
+      id: id
+    }).then((res) => {
+      this.setState({loading: false, reload: true, dimmed_card: null})
+    })
+  }
+  handleEdit = () => {
+      this.setState({loading: true})
+    Axios.post(API + 'senders/edit', {
+      token: this.state.token,
+      name: this.state.name,
+      from: this.state.from,
+      smtp_host: this.state.smtp_host,
+      port: this.state.port,
+      username: this.state.username,
+      password: this.state.password
+    }).then((res) => {
+      this.setState({loading: false, reload: true})
+    })
+  }
+  handleFavorite = (id, b) => {
+    this.setState({loading: true})
+    Axios.post(API + 'senders/delete', {
+      token: this.state.token,
+      id: id,
+      favorite: b
+    }).then((res) => {
+      this.setState({loading: false})
+    })
   }
   render(){
     return(
@@ -250,70 +284,30 @@ export default class Profiles extends Component{
               >
               {this.state.profiles.map((d, i) => {
                 return(
-                  <Segment.Group style={{marginBottom: 20}}>
-                <Segment color="yellow">
-                  <div className="row">
-                    <div className="row" style={{justifyContent: "flex-start"}}>
-                      <h2>{d.name}</h2>
-                    </div>
-                    <div className="row" style={{justifyContent: "flex-end"}}>
-                      <Rating icon="heart" size="huge"/>
-                    </div>
+                  <div style={{marginBottom: 20}}>
+                    <Dimmer.Dimmable blurring dimmed={this.state.dimmed_card === d.id}>
+                      <Dimmer
+                        inverted
+                        active={this.state.dimmed_card === d.id}
+                        onClickOutside={() => {this.setState({dimmed_card: null})}}
+                        verticalAlign="middle"
+                        >
+                        <div className="column">
+                          <div className="row" style={{flex: 1}}>
+                            <h3>
+                              Delete profile?
+                            </h3>
+                          </div>
+                          <div style={{flex: 1}}></div>
+                          <div className="row" style={{flex: 1}}>
+                            <Button color="green" onClick={() => {this.handleDelete(d.id)}}>Yes</Button>
+                            <Button color="red" onClick={() => this.setState({dimmed_card: null})}>No</Button>
+                          </div>
+                        </div>
+                      </Dimmer>
+                      <ProfileCard token={this.state.token} data={d} deleteCall={() => {this.setState({dimmed_card: d.id})}}/>
+                    </Dimmer.Dimmable>
                   </div>
-                </Segment>
-                <Segment.Group horizontal>
-                  <Segment style={{width: 100}}>Address</Segment>
-                  <Segment style={{width: '100%'}}>{d.from}</Segment>
-                </Segment.Group>
-                <Segment.Group horizontal>
-                  <Segment>
-                    <Input
-                      action={{
-                        color: "teal",
-                        icon: "globe"
-                      }}
-                      actionPosition="left"
-                      value={`${d.smtp_host}${d.port ? ":" : ""}${d.port}`}
-                      disabled
-                      />
-                  </Segment>
-                  <Segment>
-                    <Input
-                      action={{
-                        color: "teal",
-                        icon: "user"
-                      }}
-                      actionPosition="left"
-                      value={d.username}
-                      disabled
-                      />
-                  </Segment>
-                  <Segment>
-                    <Input
-                      action={{
-                        color: "teal",
-                        icon: "lock"
-                      }}
-                      actionPosition="left"
-                      value={d.password}
-                      disabled
-                      type="password"
-                      />
-                  </Segment>
-                </Segment.Group>
-                <Segment>
-                  <div className="row">
-                    <div style={{flex: 2}}></div>
-                    <div style={{flex: 1}}>
-                      <Button.Group fluid compact>
-                        <Button color="blue" style={{opacity: 0.9}}>Edit</Button>
-                        <Button color="red" style={{opacity: 0.9}}>Delete</Button>
-                      </Button.Group>
-                    </div>
-                  </div>
-
-                </Segment>
-              </Segment.Group>
                 )
               })}
             </InfiniteScroll>
