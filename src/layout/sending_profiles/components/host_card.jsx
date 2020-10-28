@@ -17,9 +17,9 @@ export default class Settings extends Component{
   }
   handleEdit = (data) => {
     this.setState({loading: true})
-    Axios.post(API + 'senders/edit', {
+    Axios.post(API + 'smtp_hosts/edit', {
       token: this.state.token,
-      profile_data: data
+      host_data: data
     }).then((res) => {
       this.setState({loading: false, reload: true})
     })
@@ -38,17 +38,6 @@ export default class Settings extends Component{
               </div>
             </Segment>
             <Segment.Group horizontal>
-              <Segment style={{width: 100}}>Address</Segment>
-              <Segment style={{width: '100%'}}>
-                <Input
-                  fluid
-                  actionPosition="left"
-                  value={this.state.data.from}
-                  disabled={this.state.editing ? false : true}
-                  />
-              </Segment>
-            </Segment.Group>
-            <Segment.Group horizontal>
               <Segment>
                 <Input
                   action={{
@@ -56,7 +45,7 @@ export default class Settings extends Component{
                     icon: "globe"
                   }}
                   actionPosition="left"
-                  value={`${this.state.data.smtp_host}${this.state.data.port ? ":" : ""}${this.state.data.port}`}
+                  value={`${this.state.data.hostname}${this.state.data.port ? ":" : ""}${this.state.data.port}`}
                   disabled={this.state.editing ? false : true}
                   />
               </Segment>

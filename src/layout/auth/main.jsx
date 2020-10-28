@@ -59,6 +59,7 @@ export default class Auth extends Component{
       }).then((res) => {
         this.setState({loading: false})
         if(res.data.status === 200){
+          cookie.set("fp_token", res.data.token, {sameSite: 'lax'})
           this.props.history.push('/dashboard/stats')
         }else{
           this.setState({loading: false})

@@ -24,7 +24,8 @@ export default class Profiles extends Component{
       created: false,
       dimmed: false,
       errors: [],
-      dimmed_card: null,
+      dimmed_profile: null,
+      dimmed_host: null,
       loading_delete: null,
       active: 'profiles'
     }
@@ -36,7 +37,7 @@ export default class Profiles extends Component{
     let errors = []
     if(!this.state.name){errors.push("Name cannot be blank.")}
     if(!this.state.from){errors.push("Sender cannot be blank.")}
-    if(!this.state.smtp_host){errors.push("SMTP Host cannot be blank.")}
+    if(!this.state.hostname){errors.push("SMTP Host cannot be blank.")}
     if(errors.length < 1){
       this.setState({loading: true})
       Axios.post(API + 'senders/new', {
@@ -51,7 +52,7 @@ export default class Profiles extends Component{
           this.setState({
             name: "",
             from: "",
-            smtp_host: "",
+            hostname: "",
             port: "",
             username: "",
             password: "",
@@ -70,13 +71,60 @@ export default class Profiles extends Component{
       this.setState({dimmed: true, errors: errors})
     }
   }
-  handleDelete = (id) => {
+  handleCreateHost = () => {
+    let errors = []
+    if(!this.state.name){errors.push("Name cannot be blank.")}
+    if(!this.state.hostname){errors.push("SMTP Host cannot be blank.")}
+    if(errors.length < 1){
+      this.setState({loading: true})
+      Axios.post(API + 'smtp_hosts/new', {
+        token: this.state.token,
+        host_data: {
+          name: this.state.name,
+          hostname: this.state.hostname,
+          port: this.state.port,
+          username: this.state.username,
+          password: this.state.password
+        }
+      }).then((res) => {
+        if(res.data.status === 200){
+          this.setState({
+            name: "",
+            hostname: "",
+            port: "",
+            username: "",
+            password: "",
+            loading: false,
+            created: true,
+            dimmed: true
+          })
+          this.setState({reload: true})
+        }else{
+          errors.push(res.data.message)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    }else{
+      this.setState({dimmed: true, errors: errors})
+    }
+  }
+  handleDeleteProfile = (id) => {
     this.setState({loading_delete: id})
     Axios.post(API + 'senders/delete', {
       token: this.state.token,
       id: id
     }).then((res) => {
-      this.setState({loading_delete: null, reload: true, dimmed_card: null})
+      this.setState({loading_delete: null, reload: true, dimmed_profile: null})
+    })
+  }
+  handleDeleteHost = (id) => {
+    this.setState({loading_delete: id})
+    Axios.post(API + 'smtp_hosts/delete', {
+      token: this.state.token,
+      id: id
+    }).then((res) => {
+      this.setState({loading_delete: null, reload: true, dimmed_host: null})
     })
   }
   handleFavorite = (id, b) => {
@@ -202,7 +250,7 @@ export default class Profiles extends Component{
                     <div className="column" style={{marginBottom: 10}}>
                       <Label color="teal" ribbon style={{width: "50%", marginBottom: 10}}>Host Address</Label>
                       <Input
-                        value={this.state.smtp_host}
+                        value={this.state.hostname}
                         style={{width: '100%'}}
                         action={{
                           basic: true,
@@ -211,7 +259,7 @@ export default class Profiles extends Component{
                         }}
                         actionPosition="left"
                         placeholder="smtp.example.com"
-                        onChange={(e) => {this.setState({smtp_host: e.target.value})}}
+                        onChange={(e) => {this.setState({hostname: e.target.value})}}
                         />
                     </div>
                     <div className="column" style={{marginBottom: 10}}>
@@ -321,11 +369,11 @@ export default class Profiles extends Component{
               {this.state.profiles.map((d, i) => {
                 return(
                   <div style={{marginBottom: 20}}>
-                    <Dimmer.Dimmable blurring dimmed={this.state.dimmed_card === d.id}>
+                    <Dimmer.Dimmable blurring dimmed={this.state.dimmed_profile === d.id}>
                       <Dimmer
                         inverted
-                        active={this.state.dimmed_card === d.id}
-                        onClickOutside={() => {this.setState({dimmed_card: null})}}
+                        active={this.state.dimmed_profile === d.id}
+                        onClickOutside={() => {this.setState({dimmed_profile: null})}}
                         verticalAlign="middle"
                         >
                         <div className="column">
@@ -336,12 +384,12 @@ export default class Profiles extends Component{
                           </div>
                           <div style={{flex: 1}}></div>
                           <div className="row" style={{flex: 1}}>
-                            <Button color="green" loading={this.state.loading_delete === d.id} onClick={() => {this.handleDelete(d.id)}}>Yes</Button>
-                            <Button color="red" loading={this.state.loading_delete === d.id} onClick={() => this.setState({dimmed_card: null})}>No</Button>
+                            <Button color="green" loading={this.state.loading_delete === d.id} onClick={() => {this.handleDeleteProfile(d.id)}}>Yes</Button>
+                            <Button color="red" loading={this.state.loading_delete === d.id} onClick={() => this.setState({dimmed_profile: null})}>No</Button>
                           </div>
                         </div>
                       </Dimmer>
-                      <ProfileCard token={this.state.token} data={d} deleteCall={() => {this.setState({dimmed_card: d.id})}}/>
+                      <ProfileCard token={this.state.token} data={d} deleteCall={() => {this.setState({dimmed_profile: d.id})}}/>
                     </Dimmer.Dimmable>
                   </div>
                 )
@@ -359,11 +407,11 @@ export default class Profiles extends Component{
               {this.state.hosts.map((d, i) => {
                 return(
                   <div style={{marginBottom: 20}}>
-                    <Dimmer.Dimmable blurring dimmed={this.state.dimmed_card === d.id}>
+                    <Dimmer.Dimmable blurring dimmed={this.state.dimmed_host === d.id}>
                       <Dimmer
                         inverted
-                        active={this.state.dimmed_card === d.id}
-                        onClickOutside={() => {this.setState({dimmed_card: null})}}
+                        active={this.state.dimmed_host === d.id}
+                        onClickOutside={() => {this.setState({dimmed_host: null})}}
                         verticalAlign="middle"
                         >
                         <div className="column">
@@ -374,12 +422,12 @@ export default class Profiles extends Component{
                           </div>
                           <div style={{flex: 1}}></div>
                           <div className="row" style={{flex: 1}}>
-                            <Button color="green" loading={this.state.loading_delete === d.id} onClick={() => {this.handleDelete(d.id)}}>Yes</Button>
-                            <Button color="red" loading={this.state.loading_delete === d.id} onClick={() => this.setState({dimmed_card: null})}>No</Button>
+                            <Button color="green" loading={this.state.loading_delete === d.id} onClick={() => {this.handleDeleteHost(d.id)}}>Yes</Button>
+                            <Button color="red" loading={this.state.loading_delete === d.id} onClick={() => this.setState({dimmed_host: null})}>No</Button>
                           </div>
                         </div>
                       </Dimmer>
-                      <HostCard token={this.state.token} data={d} deleteCall={() => {this.setState({dimmed_card: d.id})}}/>
+                      <HostCard token={this.state.token} data={d} deleteCall={() => {this.setState({dimmed_host: d.id})}}/>
                     </Dimmer.Dimmable>
                   </div>
                 )
