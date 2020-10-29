@@ -27,7 +27,6 @@ export default class Addresses extends Component{
     }, 100)
     setInterval(() => {
       if(this.resultRef.current){
-        console.log(this.resultRef)
         let st = this.resultRef.current.scrollTop
         if(st !== 0 && st > (this.resultRef.current.scrollTopMax - 10)){
           this.setState({
@@ -54,10 +53,20 @@ export default class Addresses extends Component{
     }).then((res) => {
       let page = this.state.page
       let results = this.state.results
+      let list = []
       res.data.results.map((p, i) => {
+        let obj = {
+          key: p.id,
+          value: p.id,
+          text: p.name
+        }
+        list.push(obj)
         results.push(p)
         return null
       })
+      if(this.props.dropdownList){
+        this.props.dropdownList(list)
+      }
       let uniq = new Set(results.map(e => JSON.stringify(e)))
       let arr = Array.from(uniq).map(e => JSON.parse(e))
       if(res.data.results.length > 0){

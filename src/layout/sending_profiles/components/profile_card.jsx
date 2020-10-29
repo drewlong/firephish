@@ -13,15 +13,35 @@ export default class Settings extends Component{
     }
   }
   componentDidMount = () => {
-    this.setState({data: this.props.data})
+    this.setState({data: this.props.data, token: this.props.token})
+    setTimeout(() => {
+      this.getHostDetails()
+    }, 100)
   }
-  handleEdit = (data) => {
+  handleEdit = () => {
     this.setState({loading: true})
     Axios.post(API + 'senders/edit', {
       token: this.state.token,
-      profile_data: data
+      id: this.state.data.id,
+      profile_data: this.state.data
     }).then((res) => {
-      this.setState({loading: false, reload: true})
+      this.setState({loading: false, reload: true, editing: false})
+    })
+  }
+  getHostDetails = () => {
+    let data = this.state.data
+    console.log(data)
+    Axios.post(API + 'smtp_hosts/get', {
+      token: this.state.token,
+      id: data.host_id
+    }).then((res) => {
+      if(res.data.status === 200){
+        data.hostname = res.data.result.hostname
+        data.port = res.data.result.port
+        data.username = res.data.result.username
+        data.password = "REDACTED"
+        this.setState({data: data})
+      }
     })
   }
   render(){
@@ -44,6 +64,7 @@ export default class Settings extends Component{
                   fluid
                   actionPosition="left"
                   value={this.state.data.from}
+                  onChange={(e) => {let data = this.state.data; data.from = e.target.value; this.setState({data: data})}}
                   disabled={this.state.editing ? false : true}
                   />
               </Segment>
@@ -56,8 +77,8 @@ export default class Settings extends Component{
                     icon: "globe"
                   }}
                   actionPosition="left"
-                  value={`${this.state.data.smtp_host}${this.state.data.port ? ":" : ""}${this.state.data.port}`}
-                  disabled={this.state.editing ? false : true}
+                  value={`${this.state.data.hostname}${this.state.data.port ? ":" : ""}${this.state.data.port}`}
+                  disabled
                   />
               </Segment>
               <Segment>
@@ -68,7 +89,7 @@ export default class Settings extends Component{
                   }}
                   actionPosition="left"
                   value={this.state.data.username}
-                  disabled={this.state.editing ? false : true}
+                  disabled
                   />
               </Segment>
               <Segment>
@@ -78,7 +99,8 @@ export default class Settings extends Component{
                     icon: "lock"
                   }}
                   actionPosition="left"
-                  disabled={this.state.editing ? false : true}
+                  placeholder="[REDACTED]"
+                  disabled
                   type="password"
                   />
               </Segment>
@@ -88,8 +110,16 @@ export default class Settings extends Component{
                 <div style={{flex: 2}}></div>
                 <div style={{flex: 1}}>
                   <Button.Group fluid compact>
-                    <Button color="blue" style={{opacity: 0.9}} disabled={this.state.editing} onClick={() => {this.setState({editing: true})}}>Edit</Button>
-                    <Button color="red" style={{opacity: 0.9}} onClick={this.props.deleteCall}>Delete</Button>
+                    {this.state.editing &&
+                        <Button color="green" style={{opacity: 0.9}} loading={this.state.loading} onClick={this.handleEdit}>Save</Button>
+                    }{!this.state.editing &&
+                      <Button color="blue" style={{opacity: 0.9}} onClick={() => {this.setState({editing: true})}}>Edit</Button>
+                    }
+                    {this.state.editing &&
+                      <Button color="red" style={{opacity: 0.9}} onClick={() => {this.setState({editing: false})}}>Cancel</Button>
+                    }{!this.state.editing &&
+                      <Button color="red" style={{opacity: 0.9}} onClick={this.props.deleteCall}>Delete</Button>
+                    }
                   </Button.Group>
                 </div>
               </div>

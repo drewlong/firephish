@@ -32,12 +32,15 @@ export default class Profiles extends Component{
   }
   componentDidMount = () => {
     this.setState({token: this.props.token})
+    setTimeout(() => {
+      this.collectHostList()
+    }, 100)
   }
   handleCreateProfile = () => {
     let errors = []
     if(!this.state.name){errors.push("Name cannot be blank.")}
     if(!this.state.from){errors.push("Sender cannot be blank.")}
-    if(!this.state.hostname){errors.push("SMTP Host cannot be blank.")}
+    if(!this.state.host){errors.push("SMTP Host cannot be blank.")}
     if(errors.length < 1){
       this.setState({loading: true})
       Axios.post(API + 'senders/new', {
@@ -45,7 +48,7 @@ export default class Profiles extends Component{
         profile_data: {
           name: this.state.name,
           from: this.state.from,
-          host_id: this.state.host.guid,
+          host_id: this.state.host,
         }
       }).then((res) => {
         if(res.data.status === 200){
@@ -74,7 +77,7 @@ export default class Profiles extends Component{
   handleCreateHost = () => {
     let errors = []
     if(!this.state.name){errors.push("Name cannot be blank.")}
-    if(!this.state.hostname){errors.push("SMTP Host cannot be blank.")}
+    if(!this.state.hostname){errors.push("Hostname cannot be blank.")}
     if(errors.length < 1){
       this.setState({loading: true})
       Axios.post(API + 'smtp_hosts/new', {
@@ -136,6 +139,17 @@ export default class Profiles extends Component{
     }).then((res) => {
       this.setState({loading: false})
     })
+  }
+  collectHostList = () => {
+    Axios.post(API + 'smtp_hosts/list', {
+      token: this.state.token
+    }).then((res) => {
+      this.setState({host_list: res.data.results})
+    })
+  }
+  handleSwitchTab = (e) => {
+    this.setState({active: e})
+    this.collectHostList()
   }
   render(){
     return(
@@ -220,9 +234,8 @@ export default class Profiles extends Component{
                       placeholder='Select Host'
                       search
                       selection
-                      options={this.state.hosts}
-                      value={this.state.host}
-                      onChange={(e, obj) => {this.setState({host: obj.value})}}
+                      options={this.state.host_list}
+                      onChange={(e, obj) => {this.setState({host: obj.value}); console.log(obj.value)}}
                       />
                 </div>
               </Segment>
@@ -311,7 +324,7 @@ export default class Profiles extends Component{
                   </Segment>
                   <Segment>
                     <div className="row" style={{marginBottom: 10}}>
-                      <Button color="green" fluid onClick={this.handleCreateHost}>Save</Button>
+                      <Button color="green" loading={this.state.loading} fluid onClick={this.handleCreateHost}>Save</Button>
                     </div>
                   </Segment>
                 </Segment.Group>
@@ -329,12 +342,12 @@ export default class Profiles extends Component{
                 <Menu.Item
                   name='Profiles'
                   active={this.state.active === 'profiles'}
-                  onClick={() => {this.setState({active: 'profiles'})}}
+                  onClick={() => {this.handleSwitchTab('profiles')}}
                   />
                 <Menu.Item
                   name='SMTP Hosts'
                   active={this.state.active === 'hosts'}
-                  onClick={() => {this.setState({active: 'hosts'})}}
+                  onClick={() => {this.handleSwitchTab('hosts')}}
                   />
                 <Menu.Menu position='right'>
                   <Menu.Item>
