@@ -29,13 +29,15 @@ export default class Settings extends Component{
     })
   }
   handleFavorite = (e) => {
+    let val = e === 0 ? false : true
     Axios.post(API + 'smtp_hosts/favorite', {
       token: this.state.token,
       id: this.state.data.id,
-      favorite: e
-    }).then((res) => {
-      
-    })
+      favorite: val
+    }).then((res) => {})
+    let data = this.state.data
+    data.favorite = e
+    this.setState({data: data})
   }
   render(){
     return(
@@ -46,7 +48,7 @@ export default class Settings extends Component{
                   <h2>{this.state.data.name}</h2>
                 </div>
                 <div className="row" style={{justifyContent: "flex-end"}}>
-                  <Rating icon="heart" size="huge"/>
+                  <Rating rating={this.state.data.favorite} icon="heart" size="huge" onRate={(e, v) => {this.handleFavorite(v.rating)}}/>
                 </div>
               </div>
             </Segment>

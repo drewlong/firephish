@@ -27,7 +27,8 @@ export default class Profiles extends Component{
       dimmed_profile: null,
       dimmed_host: null,
       loading_delete: null,
-      active: 'profiles'
+      active: 'profiles',
+      favorites: false
     }
   }
   componentDidMount = () => {
@@ -357,7 +358,7 @@ export default class Profiles extends Component{
                       </div>
                       <span>&nbsp;&nbsp;&nbsp;</span>
                       <div className="row">
-                        <Checkbox toggle disabled={this.state.loading || this.state.profiles.length < 1}/>
+                        <Checkbox toggle onChange={(e, v) => {this.setState({favorites: v.checked})}} disabled={this.state.loading || this.state.profiles.length < 1}/>
                       </div>
                     </div>
                   </Menu.Item>
@@ -419,7 +420,7 @@ export default class Profiles extends Component{
               >
               {this.state.hosts.map((d, i) => {
                 return(
-                  <div style={{marginBottom: 20}}>
+                  <div style={{marginBottom: 20, display: this.state.favorites && d.favorite ? "none" : ""}}>
                     <Dimmer.Dimmable blurring dimmed={this.state.dimmed_host === d.id}>
                       <Dimmer
                         inverted
