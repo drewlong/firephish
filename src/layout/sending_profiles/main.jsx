@@ -131,16 +131,7 @@ export default class Profiles extends Component{
       this.setState({loading_delete: null, reload: true, dimmed_host: null})
     })
   }
-  handleFavorite = (id, b) => {
-    this.setState({loading: true})
-    Axios.post(API + 'senders/delete', {
-      token: this.state.token,
-      id: id,
-      favorite: b
-    }).then((res) => {
-      this.setState({loading: false})
-    })
-  }
+
   collectHostList = () => {
     Axios.post(API + 'smtp_hosts/list', {
       token: this.state.token
@@ -403,7 +394,7 @@ export default class Profiles extends Component{
                           </div>
                         </div>
                       </Dimmer>
-                      <ProfileCard token={this.state.token} data={d} deleteCall={() => {this.setState({dimmed_profile: d.id})}}/>
+                      <ProfileCard faveView={this.state.favorites} token={this.state.token} data={d} deleteCall={() => {this.setState({dimmed_profile: d.id})}}/>
                     </Dimmer.Dimmable>
                   </div>
                 )
@@ -420,7 +411,7 @@ export default class Profiles extends Component{
               >
               {this.state.hosts.map((d, i) => {
                 return(
-                  <div style={{marginBottom: 20, display: this.state.favorites && d.favorite ? "none" : ""}}>
+                  <div style={{marginBottom: 20}}>
                     <Dimmer.Dimmable blurring dimmed={this.state.dimmed_host === d.id}>
                       <Dimmer
                         inverted
@@ -441,7 +432,7 @@ export default class Profiles extends Component{
                           </div>
                         </div>
                       </Dimmer>
-                      <HostCard token={this.state.token} data={d} deleteCall={() => {this.setState({dimmed_host: d.id})}}/>
+                      <HostCard faveView={this.state.favorites} token={this.state.token} data={d} deleteCall={() => {this.setState({dimmed_host: d.id})}}/>
                     </Dimmer.Dimmable>
                   </div>
                 )

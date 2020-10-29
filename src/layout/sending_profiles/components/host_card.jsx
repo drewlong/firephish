@@ -10,12 +10,22 @@ export default class Settings extends Component{
     super(props)
     this.state = {
       data: {},
-      host: {}
+      host: {},
+      fave_view: false,
+      display: ""
     }
   }
   componentDidMount = () => {
-    let data = this.props.data
-    this.setState({data: data, token: this.props.token})
+    this.setState({data: this.props.data, token: this.props.token})
+  }
+  componentDidUpdate = (prev) => {
+    if(prev.faveView !== this.props.faveView){
+      if(this.props.faveView && !this.state.data.favorite){
+        this.setState({display: "none"})
+      }else{
+        this.setState({display: ""})
+      }
+    }
   }
   handleEdit = () => {
     let data = this.state.data
@@ -29,26 +39,26 @@ export default class Settings extends Component{
     })
   }
   handleFavorite = (e) => {
-    let val = e === 0 ? false : true
+    let data = this.state.data
+    data.favorite = e
     Axios.post(API + 'smtp_hosts/favorite', {
       token: this.state.token,
       id: this.state.data.id,
-      favorite: val
-    }).then((res) => {})
-    let data = this.state.data
-    data.favorite = e
-    this.setState({data: data})
+      favorite: e
+    }).then((res) => {
+      this.setState({data: data})
+    })
   }
   render(){
     return(
-      <Segment.Group>
+      <Segment.Group style={{display: this.state.display}}>
             <Segment color="yellow">
               <div className="row">
                 <div className="row" style={{justifyContent: "flex-start"}}>
                   <h2>{this.state.data.name}</h2>
                 </div>
                 <div className="row" style={{justifyContent: "flex-end"}}>
-                  <Rating rating={this.state.data.favorite} icon="heart" size="huge" onRate={(e, v) => {this.handleFavorite(v.rating)}}/>
+                  <Rating icon="heart" size="huge" rating={this.state.data.favorite} onRate={(e, v) => {this.handleFavorite(v.rating)}}/>
                 </div>
               </div>
             </Segment>
